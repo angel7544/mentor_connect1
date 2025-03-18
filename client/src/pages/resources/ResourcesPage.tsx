@@ -34,13 +34,10 @@ const ResourcesPage: React.FC = () => {
     return <LoadingSpinner size="large" text="Loading resources..." />;
   }
 
-  // For development/debugging only
-  const isDev = process.env.NODE_ENV === 'development';
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Debugging component - only in development */}
-      {isDev && <AuthDebug />}
+      
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
         <h1 className="text-3xl font-bold text-gray-900">Resource Library</h1>

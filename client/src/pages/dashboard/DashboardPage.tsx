@@ -23,8 +23,7 @@ const DashboardPage: React.FC = () => {
     fetchDashboardData();
   }, []);
 
-  // For development/debugging only
-  const isDev = process.env.NODE_ENV === 'development';
+ 
 
   if (isLoading) {
     return <LoadingSpinner size="large" text="Loading dashboard..." />;
@@ -32,8 +31,7 @@ const DashboardPage: React.FC = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      {/* Debugging component - only in development */}
-      {isDev && <AuthDebug />}
+    
       
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8">
         <div>

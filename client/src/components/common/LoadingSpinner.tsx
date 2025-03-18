@@ -29,7 +29,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({
   };
   
   return (
-    <div className="flex flex-col items-center justify-center p-4">
+    <div className="flex flex-col h-screen items-center justify-center p-4">
       <svg 
         className={`animate-spin ${sizeClasses[size]} ${color in colorClasses ? colorClasses[color as keyof typeof colorClasses] : color}`} 
         xmlns="http://www.w3.org/2000/svg" 
