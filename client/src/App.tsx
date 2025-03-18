@@ -37,7 +37,7 @@ function App() {
       <Toaster position="top-right" />
       <Routes>
         {/* Public routes */}
-        <Route element={<MainLayout />}>
+        <Route >
           <Route path="/" element={<HomePage />} />
         </Route>
         

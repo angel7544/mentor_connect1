@@ -22,7 +22,7 @@ const MainLayout: React.FC = () => {
   const { isAuthenticated, logout } = useAuthStore();
 
   const navigation = [
-    { name: 'Home', href: '/', icon: HomeIcon },
+    ...(isAuthenticated ? [] : [{ name: 'Home', href: '/', icon: HomeIcon }]), // Include Home only if not authenticated
     { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, protected: true },
     { name: 'Profile', href: '/profile', icon: UserIcon, protected: true },
     { name: 'Mentorship', href: '/mentorship', icon: UsersIcon, protected: true },
@@ -34,7 +34,7 @@ const MainLayout: React.FC = () => {
 
   const handleLogout = () => {
     logout();
-    navigate('/login');
+    navigate('/');
   };
 
   return (
@@ -116,7 +116,6 @@ const MainLayout: React.FC = () => {
             <nav className="mt-5 flex-1 space-y-1 px-2">
               {navigation.map((item) => {
                 if (item.protected && !isAuthenticated) return null;
-                
                 return (
                   <Link
                     key={item.name}
@@ -180,4 +179,4 @@ const MainLayout: React.FC = () => {
   );
 };
 
-export default MainLayout; 
+export default MainLayout;
