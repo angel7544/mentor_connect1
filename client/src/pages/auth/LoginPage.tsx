@@ -1,15 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState,useEffect } from 'react';
 import {  useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import useAuthStore from '../../store/authStore';
-
+import Aos from 'aos';
+import 'aos/dist/aos.css';
 interface LoginFormData {
   email: string;
   password: string;
 }
 
 const LoginPage: React.FC = () => {
+   useEffect(()=>{
+    Aos.init();
+   })
   const navigate = useNavigate();
   const { login, isLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
@@ -43,7 +47,7 @@ const LoginPage: React.FC = () => {
   };
   
   return (
-    <div>
+    <div data-aos="fade-zoom-in" >
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Sign in to your account</h2>
       
       {submitError && (
