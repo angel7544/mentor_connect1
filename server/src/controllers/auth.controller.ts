@@ -2,7 +2,8 @@ import { Request, Response } from 'express';
 import { UserModel, IStudent, IAlumni, IAdmin } from '../models/user.model';
 import { comparePasswords, generateToken, generateRefreshToken } from '../utils/auth.utils';
 import { ObjectId } from 'mongodb';
-
+import { welcomeMailOptions } from '../utils/mailoptions';
+import transporter from '../utils/mailtransport';
 /**
  * User signup controller - handles registration for students and alumni
  */
@@ -97,7 +98,8 @@ export const signup = async (req: Request, res: Response) => {
     // Generate JWT tokens
     const token = generateToken(newUser._id as ObjectId);
     const refreshToken = generateRefreshToken(newUser._id as ObjectId);
-
+    
+    await transporter.sendMail(welcomeMailOptions(email, firstName));
     return res.status(201).json({
       success: true,
       message: 'User registered successfully',
