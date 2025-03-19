@@ -1,8 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import useAuthStore from '../../store/authStore';
+import Aos from 'aos';
+import 'aos/dist/aos.css';
 
 interface RegisterFormData {
   firstName: string;
@@ -15,6 +17,10 @@ interface RegisterFormData {
 }
 
 const RegisterPage: React.FC = () => {
+  useEffect(()=>{
+    Aos.init();
+  })
+
   const navigate = useNavigate();
   const { register: registerUser, isLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
@@ -120,9 +126,10 @@ const RegisterPage: React.FC = () => {
   
   // Show different fields based on selected role
   const renderRoleSpecificFields = () => {
+    
     if (selectedRole === 'ALUMNI') {
       return (
-        <div>
+        <div data-aos="fade-zoom-in">
           <label htmlFor="graduationYear" className="block text-sm font-medium text-gray-700">
             Graduation Year
           </label>
@@ -149,7 +156,7 @@ const RegisterPage: React.FC = () => {
   };
   
   return (
-    <div>
+    <div data-aos="fade-zoom-in" >
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Create your account</h2>
       
       {submitError && (
@@ -158,7 +165,7 @@ const RegisterPage: React.FC = () => {
         </div>
       )}
       
-      <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
+      <form className="space-y-6" onSubmit={handleSubmit(onSubmit)} >
         <div className="grid grid-cols-1 gap-y-6 gap-x-4 sm:grid-cols-2">
           <div>
             <label htmlFor="firstName" className="block text-sm font-medium text-gray-700">
