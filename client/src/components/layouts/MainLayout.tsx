@@ -31,6 +31,7 @@ const MainLayout: React.FC = () => {
     { name: 'Events', href: '/events', icon: CalendarIcon, protected: true },
     { name: 'Forum', href: '/forum', icon: ChatBubbleLeftIcon, protected: true },
     { name: 'Chatbot', href: '/chatbot', icon: ChatBubbleLeftIcon, protected: true },
+    { name: 'Help', href: '/ContactUs', icon: ChatBubbleLeftIcon, protected: true },
   ];
 
   const handleLogout = () => {
