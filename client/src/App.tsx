@@ -20,6 +20,7 @@ import EventsPage from './pages/events/EventsPage';
 import ForumPage from './pages/forum/ForumPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Chatbot from './pages/chatbot/chatbot';
+import ContactUs from './pages/ContactUs/ContactUs';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -111,6 +112,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <Chatbot />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/ContactUs" 
+            element={
+              <ProtectedRoute>
+                <ContactUs />
               </ProtectedRoute>
             } 
           />
