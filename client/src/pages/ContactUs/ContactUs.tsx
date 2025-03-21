@@ -1,47 +1,162 @@
-import React from 'react'
+import React, { useState } from 'react';
+import { motion } from 'framer-motion';
+import { FiMail, FiPhone, FiMapPin } from 'react-icons/fi';
 
 function ContactUs() {
-  return (
-    <section className="text-gray-600 body-font relative">
-  <div className="absolute inset-0 bg-gray-300">
-    <iframe 
-      width="100%" 
-      height="100%" 
-      frameBorder="0" 
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
 
-      title="map" 
-      scrolling="no" 
-      src="https://maps.google.com/maps?width=100%height=600hl=enq=%C4%B0zmir+(My%20Business%20Name)ie=UTF8t=z=14iwloc=Boutput=embed" 
-      style={{ filter: 'grayscale(1) contrast(1.2) opacity(0.4)' }}
-    ></iframe>
-  </div>
-  <div className="container px-5 py-24 mx-auto flex">
-    <div className="lg:w-1/3 md:w-1/2 bg-white rounded-lg p-8 flex flex-col md:ml-auto w-full mt-10 md:mt-0 relative z-10 shadow-md">
-      <h2 className="text-gray-900 text-lg mb-1 font-medium title-font">Feedback</h2>
-      <p className="leading-relaxed mb-5 text-gray-600">Post-ironic portland shabby chic echo park, banjo fashion axe</p>
-      <div className="relative mb-4">
-        <label htmlFor="email" className="leading-7 text-sm text-gray-600">Email</label>
-        <input 
-          type="email" 
-          id="email" 
-          name="email" 
-          className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 text-base outline-none text-gray-700 py-1 px-3 leading-8 transition-colors duration-200 ease-in-out" 
-        />
-      </div>
-      <div className="relative mb-4">
-        <label htmlFor="message" className="leading-7 text-sm text-gray-600">Message</label>
-        <textarea 
-          id="message" 
-          name="message" 
-          className="w-full bg-white rounded border border-gray-300 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-200 h-32 text-base outline-none text-gray-700 py-1 px-3 resize-none leading-6 transition-colors duration-200 ease-in-out" 
-        ></textarea>
-      </div>
-      <button className="text-white bg-indigo-500 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-600 rounded text-lg">Button</button>
-      <p className="text-xs text-gray-500 mt-3">Chicharrones blog helvetica normcore iceland tousled brook viral artisan.</p>
-    </div>
-  </div>
-</section>
-  )
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Handle form submission logic here
+    console.log(formData);
+  };
+
+  return (
+    <section className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 sm:py-16 lg:py-20">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8 }}
+        className="container mx-auto px-4 sm:px-6 lg:px-8"
+      >
+        <div className="text-center mb-16">
+          <motion.h1 
+            initial={{ opacity: 0, y: -20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.2 }}
+            className="text-4xl font-bold text-gray-900 mb-4"
+          >
+            Get in Touch
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="text-lg text-gray-600 max-w-2xl mx-auto"
+          >
+            Have questions about mentorship? We're here to help you connect with the right mentors.
+          </motion.p>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          {/* Contact Information */}
+          <motion.div
+            initial={{ opacity: 0, x: -50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.6 }}
+            className="space-y-8"
+          >
+            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="flex items-center space-x-6">
+                <div className="bg-primary-100 p-4 rounded-full">
+                  {FiMail({ className: "w-6 h-6 text-primary-600" })}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900">Email Us</h3>
+                  <p className="text-gray-600 mt-1">support@mentorconnect.com</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="flex items-center space-x-6">
+                <div className="bg-primary-100 p-4 rounded-full">
+                  {FiPhone({ className: "w-6 h-6 text-primary-600" })}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900">Call Us</h3>
+                  <p className="text-gray-600 mt-1">+1 (555) 123-4567</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow">
+              <div className="flex items-center space-x-6">
+                <div className="bg-primary-100 p-4 rounded-full">
+                  {FiMapPin({ className: "w-6 h-6 text-primary-600" })}
+                </div>
+                <div>
+                  <h3 className="text-xl font-semibold text-gray-900">Visit Us</h3>
+                  <p className="text-gray-600 mt-1">123 Mentor Street, Tech Valley, CA 94043</p>
+                </div>
+              </div>
+            </div>
+          </motion.div>
+
+          {/* Contact Form */}
+          <motion.div
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.8 }}
+            className="bg-white rounded-2xl p-8 shadow-xl"
+          >
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">
+                  Name
+                </label>
+                <motion.input
+                  whileFocus={{ scale: 1.01 }}
+                  type="text"
+                  id="name"
+                  name="name"
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                  className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-primary-500"
+                  placeholder="Your name"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+                  Email
+                </label>
+                <motion.input
+                  whileFocus={{ scale: 1.01 }}
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData.email}
+                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                  className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-primary-500"
+                  placeholder="your@email.com"
+                />
+              </div>
+
+              <div>
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700">
+                  Message
+                </label>
+                <motion.textarea
+                  whileFocus={{ scale: 1.01 }}
+                  id="message"
+                  name="message"
+                  value={formData.message}
+                  onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                  rows={4}
+                  className="mt-1 block w-full rounded-lg border border-gray-300 px-4 py-3 focus:border-primary-500 focus:ring-primary-500"
+                  placeholder="Your message..."
+                />
+              </div>
+
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="submit"
+                className="w-full bg-primary-600 text-white py-3 px-6 rounded-lg hover:bg-primary-700 transition-colors"
+              >
+                Send Message
+              </motion.button>
+            </form>
+          </motion.div>
+        </div>
+      </motion.div>
+    </section>
+  );
 }
 
-export default ContactUs
+export default ContactUs;

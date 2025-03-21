@@ -8,6 +8,13 @@
   }
 }
 
+@layer utilities {
+  .bg-dots-pattern {
+    background-image: radial-gradient(circle, #ffffff 1px, transparent 1px);
+    background-size: 20px 20px;
+  }
+}
+
 @layer components {
   .input {
     @apply appearance-none rounded-md relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-primary-500 focus:border-primary-500;
