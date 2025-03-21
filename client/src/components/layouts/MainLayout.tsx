@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   HomeIcon, 
@@ -10,9 +10,19 @@ import {
   ChatBubbleLeftIcon,
   Bars3Icon,
   XMarkIcon,
-  BellIcon
+  BellIcon,
+  ChartBarIcon,
+  QuestionMarkCircleIcon
 } from '@heroicons/react/24/outline';
 import useAuthStore from '../../store/authStore';
+
+// Define the type for navigation items
+interface NavigationItem {
+  name: string;
+  href: string;
+  icon: React.ForwardRefExoticComponent<React.SVGProps<SVGSVGElement> & { title?: string; titleId?: string; }>;
+  protected?: boolean;
+}
 
 const MainLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -20,24 +30,70 @@ const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore(state => ({ user: state.user }));
   const { isAuthenticated, logout } = useAuthStore();
-
-  const navigation = [
+  const userRole = user?.role || '';
+  
+  // Base navigation items for all users
+  const baseNavigation: NavigationItem[] = [
     ...(isAuthenticated ? [] : [{ name: 'Home', href: '/', icon: HomeIcon }]), // Include Home only if not authenticated
-    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, protected: true },
-    { name: 'Profile', href: '/profile', icon: UserIcon, protected: true },
-    { name: 'Mentorship', href: '/mentorship', icon: UsersIcon, protected: true },
-    { name: 'Messages', href: '/messages', icon: ChatBubbleLeftRightIcon, protected: true },
-    { name: 'Resources', href: '/resources', icon: DocumentTextIcon, protected: true },
-    { name: 'Events', href: '/events', icon: CalendarIcon, protected: true },
-    { name: 'Forum', href: '/forum', icon: ChatBubbleLeftIcon, protected: true },
+  ];
+  
+  // Role-specific navigation items
+  const studentNavigation: NavigationItem[] = [
+    { name: 'Dashboard', href: '/student/dashboard', icon: HomeIcon, protected: true },
+    { name: 'Profile', href: '/student/profile', icon: UserIcon, protected: true },
+    { name: 'Mentorship', href: '/student/mentorship', icon: UsersIcon, protected: true },
+    { name: 'Messages', href: '/student/messages', icon: ChatBubbleLeftRightIcon, protected: true },
+    { name: 'Resources', href: '/student/resources', icon: DocumentTextIcon, protected: true },
+    { name: 'Events', href: '/student/events', icon: CalendarIcon, protected: true },
+    { name: 'Forum', href: '/student/forum', icon: ChatBubbleLeftIcon, protected: true },
+  ];
+  
+  const alumniNavigation: NavigationItem[] = [
+    { name: 'Dashboard', href: '/alumni/dashboard', icon: HomeIcon, protected: true },
+    { name: 'Profile', href: '/alumni/profile', icon: UserIcon, protected: true },
+    { name: 'Mentorship', href: '/alumni/mentorship', icon: UsersIcon, protected: true },
+    { name: 'Messages', href: '/alumni/messages', icon: ChatBubbleLeftRightIcon, protected: true },
+    { name: 'Resources', href: '/alumni/resources', icon: DocumentTextIcon, protected: true },
+    { name: 'Events', href: '/alumni/events', icon: CalendarIcon, protected: true },
+    { name: 'Forum', href: '/alumni/forum', icon: ChatBubbleLeftIcon, protected: true },
+    { name: 'Analytics', href: '/alumni/analytics', icon: ChartBarIcon, protected: true },
+  ];
+  
+  // Common items for all authenticated users
+  const commonNavigation: NavigationItem[] = [
     { name: 'Chatbot', href: '/chatbot', icon: ChatBubbleLeftIcon, protected: true },
-    { name: 'Help', href: '/ContactUs', icon: ChatBubbleLeftIcon, protected: true },
+    { name: 'Help', href: '/contact', icon: QuestionMarkCircleIcon, protected: true },
+  ];
+  
+  // Select navigation items based on user role
+  const roleBasedNavigation = isAuthenticated ? (
+    userRole === 'alumni' ? alumniNavigation :
+    userRole === 'admin' ? [] : // Admin navigation would go here
+    studentNavigation
+  ) : [];
+  
+  // Combine all navigation items
+  const navigation: NavigationItem[] = [
+    ...baseNavigation,
+    ...roleBasedNavigation,
+    ...commonNavigation
   ];
 
   const handleLogout = () => {
     logout();
     navigate('/');
   };
+  
+  // Redirect legacy routes to role-specific routes
+  useEffect(() => {
+    if (isAuthenticated && location.pathname) {
+      const legacyRoutes = ['/dashboard', '/profile', '/mentorship', '/messages', '/resources', '/events', '/forum'];
+      if (legacyRoutes.includes(location.pathname)) {
+        const newPath = `/${userRole}${location.pathname}`;
+        navigate(newPath, { replace: true });
+      }
+    }
+  }, [location.pathname, isAuthenticated, userRole, navigate]);
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -74,14 +130,14 @@ const MainLayout: React.FC = () => {
                     key={item.name}
                     to={item.href}
                     className={`group flex items-center px-2 py-2 text-base font-medium rounded-md ${
-                      location.pathname === item.href
+                      location.pathname === item.href || location.pathname.startsWith(item.href + '/')
                         ? 'bg-primary-100 text-primary-700'
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }`}
                   >
                     <item.icon
                       className={`mr-4 h-6 w-6 flex-shrink-0 ${
-                        location.pathname === item.href
+                        location.pathname === item.href || location.pathname.startsWith(item.href + '/')
                           ? 'text-primary-700'
                           : 'text-gray-400 group-hover:text-gray-500'
                       }`}
@@ -123,14 +179,14 @@ const MainLayout: React.FC = () => {
                     key={item.name}
                     to={item.href}
                     className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
-                      location.pathname === item.href
+                      location.pathname === item.href || location.pathname.startsWith(item.href + '/')
                         ? 'bg-primary-100 text-primary-700'
                         : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
                     }`}
                   >
                     <item.icon
                       className={`mr-3 h-5 w-5 flex-shrink-0 ${
-                        location.pathname === item.href
+                        location.pathname === item.href || location.pathname.startsWith(item.href + '/')
                           ? 'text-primary-700'
                           : 'text-gray-400 group-hover:text-gray-500'
                       }`}
