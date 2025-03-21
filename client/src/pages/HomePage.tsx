@@ -590,17 +590,31 @@ const Features: React.FC = () => {
 const Team: React.FC = () => {
   const teamMembers = [
     {
-      name: "Sarah Johnson",
-      role: "CEO & Founder",
-      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330",
-      linkedin: "https://linkedin.com/in/sarah-johnson"
+      name: "Sneha Kumari",
+      role: "Team Lead",
+      image: "https://media.licdn.com/dms/image/v2/D5603AQEKFxNGtE0AYg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1727548244056?e=1747872000&v=beta&t=48luPokfDSt4vR-5FykOWru15j2b-8DhjGOPe1z7pfg",
+      linkedin: "https://www.linkedin.com/in/sneha-kumari-ss/"
     },
     {
-      name: "Michael Chen",
-      role: "CTO",
-      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
-      linkedin: "https://linkedin.com/in/michael-chen"
+      name: "Ashutosh kumar",
+      role: "Developer",
+      image: "https://media.licdn.com/dms/image/v2/D4D03AQFzSZQ3JBZ3vQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1728229346985?e=1747872000&v=beta&t=GpYiPxS7VFMAEdUQyJkFRzynYZQk3n2FXrjcngevi_4",
+      linkedin: "https://www.linkedin.com/in/ashukr321/"
     },
+
+    {
+      name: "Shivam kumar sinha",
+      role: "Developer",
+      image: "https://media.licdn.com/dms/image/v2/D4D03AQG9heV8RJilig/profile-displayphoto-shrink_400_400/B4DZRFefprG4Ag-/0/1736332410223?e=1747872000&v=beta&t=NdcFXuiG3npcxxbIMAcBuaf7COIeYUa8RUkRbEfVTGg",
+      linkedin: "https://www.linkedin.com/in/shivam-kumar-sinha-55aa9b273/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+    },
+    {
+      name: "Angel (Mehul) Singh",
+      role: "Developer",
+      image: "https://media.licdn.com/dms/image/v2/D4D03AQFinZ5z30I1nQ/profile-displayphoto-shrink_400_400/B4DZTRVNVDGkAk-/0/1738678785903?e=1747872000&v=beta&t=j_Hjqh27QfCvmI_H7m-1sa7bvJgJGNXBOeSN6RSyQJ0",
+      linkedin: "https://www.linkedin.com/in/angel3002/"
+    },
+
     
   ];
 
