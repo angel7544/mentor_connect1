@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { 
@@ -9,10 +9,8 @@ import {
   AcademicCapIcon,
   ClockIcon,
   CheckCircleIcon,
-  XCircleIcon,
-  ChartBarIcon
+  XCircleIcon
 } from '@heroicons/react/24/outline';
-import ErrorDisplay from '../../components/common/ErrorDisplay';
 
 interface MentorshipRequest {
   _id: string;
@@ -102,32 +100,45 @@ const AlumniDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Move fetchDashboardData to useCallback for better retry handling
-  const fetchDashboardData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      // For development, always use mock data to ensure the dashboard loads
-      // In production, we would try the API calls first
-      const useMockData = true; // Set to false to attempt real API calls
-      
-      if (!useMockData) {
-        // Add a delay to simulate network latency
-        await new Promise(resolve => setTimeout(resolve, 1000));
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
         
-        try {
-          // Actual API calls would go here
-          // ... API calls ...
-          setLoading(false);
-        } catch (apiError) {
-          throw apiError;
-        }
-      } else {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // In a real implementation, these would be actual API calls
+        // For now, we'll simulate the data
         
-        // Set mock data directly
+        // Fetch mentorship requests
+        const requestsResponse = await axios.get<MentorshipRequestsResponse>('/api/mentorship/requests?status=pending');
+        setMentorshipRequests(requestsResponse.data.data.mentorships);
+        
+        // Fetch active mentorships
+        const mentorshipsResponse = await axios.get<ActiveMentorshipsResponse>('/api/mentorship/requests?status=active');
+        setActiveMentorships(mentorshipsResponse.data.data.mentorships);
+        
+        // Fetch upcoming events
+        const eventsResponse = await axios.get<UpcomingEventsResponse>('/api/events/upcoming');
+        setUpcomingEvents(eventsResponse.data.data.events);
+        
+        // Fetch unread message count
+        const messagesResponse = await axios.get<UnreadMessagesResponse>('/api/messages/unread/count');
+        
+        // Update stats
+        setStats({
+          pendingRequests: requestsResponse.data.data.mentorships.length,
+          activeMentorships: mentorshipsResponse.data.data.mentorships.length,
+          completedMentorships: 5, // Mock data
+          upcomingEvents: eventsResponse.data.data.events.length,
+          unreadMessages: messagesResponse.data.data.count
+        });
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data. Please try again later.');
+        setLoading(false);
+        
+        // For demo purposes, set mock data
         setMentorshipRequests([
           {
             _id: '1',
@@ -208,29 +219,11 @@ const AlumniDashboard: React.FC = () => {
           upcomingEvents: 2,
           unreadMessages: 3
         });
-        
-        setLoading(false);
       }
-    } catch (err) {
-      console.error('Error fetching dashboard data:', err);
-      
-      // Check if it's a network error
-      if (err && typeof err === 'object' && 'isAxiosError' in err && !err.response) {
-        setError('Network error. Please check your internet connection.');
-      } else {
-        setError('Failed to load dashboard data. Please try again later.');
-      }
-      
-      setLoading(false);
-      
-      // Set mock data anyway to ensure something displays
-      // ... mock data setup ...
-    }
-  }, []);
-
-  useEffect(() => {
+    };
+    
     fetchDashboardData();
-  }, [fetchDashboardData]);
+  }, []);
 
   const handleAcceptRequest = async (requestId: string) => {
     try {
@@ -285,7 +278,12 @@ const AlumniDashboard: React.FC = () => {
   }
 
   if (error) {
-    return <ErrorDisplay message={error} retry={fetchDashboardData} />;
+    return (
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong className="font-bold">Error!</strong>
+        <span className="block sm:inline"> {error}</span>
+      </div>
+    );
   }
 
   return (
@@ -574,71 +572,6 @@ const AlumniDashboard: React.FC = () => {
               <CalendarIcon className="h-8 w-8 text-red-600 mb-2" />
               <span className="text-gray-700">Create Event</span>
             </Link>
-            
-            <Link to="/analytics" className="flex flex-col items-center p-4 border rounded-lg hover:bg-gray-50">
-              <ChartBarIcon className="h-8 w-8 text-indigo-600 mb-2" />
-              <span className="text-gray-700">View Analytics</span>
-            </Link>
-          </div>
-        </div>
-      </div>
-      
-      {/* Mentorship Availability */}
-      <div className="bg-white rounded-lg shadow mt-6">
-        <div className="border-b px-6 py-4 flex justify-between items-center">
-          <h2 className="text-xl font-semibold text-gray-800">Mentorship Availability</h2>
-          <div className="flex items-center">
-            <span className="mr-3 text-sm text-gray-600">Open to Mentor</span>
-            <label className="relative inline-flex items-center cursor-pointer">
-              <input type="checkbox" className="sr-only peer" defaultChecked />
-              <div className="w-11 h-6 bg-gray-200 peer-focus:outline-none peer-focus:ring-4 peer-focus:ring-blue-300 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-blue-600"></div>
-            </label>
-          </div>
-        </div>
-        
-        <div className="p-6">
-          <div className="bg-blue-50 p-4 rounded-lg mb-4">
-            <div className="flex items-center">
-              <div className="rounded-full bg-blue-100 p-2 mr-3">
-                <CheckCircleIcon className="h-5 w-5 text-blue-600" />
-              </div>
-              <div>
-                <p className="font-medium text-blue-800">You're open to new mentorship requests</p>
-                <p className="text-sm text-blue-600">Students can see your profile in mentor searches</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="border rounded-lg p-4">
-              <h3 className="font-medium text-gray-900 mb-2">Current Availability</h3>
-              <div className="space-y-2">
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Hours per week:</span>
-                  <span className="text-sm font-medium">3-5 hours</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Active mentorships:</span>
-                  <span className="text-sm font-medium">{stats.activeMentorships} of 3</span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-sm text-gray-600">Pending requests:</span>
-                  <span className="text-sm font-medium">{stats.pendingRequests}</span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="border rounded-lg p-4">
-              <h3 className="font-medium text-gray-900 mb-2">Quick Actions</h3>
-              <div className="space-y-2">
-                <Link to="/profile" className="block px-4 py-2 text-sm text-center bg-blue-600 text-white rounded hover:bg-blue-700 transition-colors">
-                  Update Mentorship Preferences
-                </Link>
-                <Link to="/mentorship/requests" className="block px-4 py-2 text-sm text-center border border-gray-300 text-gray-700 rounded hover:bg-gray-50 transition-colors">
-                  View All Requests
-                </Link>
-              </div>
-            </div>
           </div>
         </div>
       </div>

@@ -303,24 +303,8 @@ const AlumniProfileView: React.FC<{ isEditing: boolean }> = ({ isEditing }) => {
                    formData.availabilityHours === "3-5" ? "3-5 hours per week" : 
                    "5+ hours per week"}
                 </p>
-                {formData.isAvailableForMentoring ? (
-                  <div className="flex items-center mt-2">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-green-100 text-green-800">
-                      <svg className="mr-1.5 h-2 w-2 text-green-600" fill="currentColor" viewBox="0 0 8 8">
-                        <circle cx="4" cy="4" r="3" />
-                      </svg>
-                      Open to Mentorship
-                    </span>
-                  </div>
-                ) : (
-                  <div className="flex items-center mt-2">
-                    <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800">
-                      <svg className="mr-1.5 h-2 w-2 text-red-600" fill="currentColor" viewBox="0 0 8 8">
-                        <circle cx="4" cy="4" r="3" />
-                      </svg>
-                      Not Available for Mentorship
-                    </span>
-                  </div>
+                {formData.isAvailableForMentoring && (
+                  <p className="text-green-600 text-sm">Available for mentoring</p>
                 )}
               </div>
             )}
@@ -328,122 +312,9 @@ const AlumniProfileView: React.FC<{ isEditing: boolean }> = ({ isEditing }) => {
         </div>
       </section>
 
-      {/* Mentorship Availability */}
-      <section className="bg-white rounded-lg shadow-md p-6">
-        <h2 className="text-2xl font-semibold mb-6">Mentorship Availability</h2>
-        <div className="space-y-6">
-          <div className="bg-gray-50 p-4 rounded-lg">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <div className={`h-4 w-4 rounded-full ${formData.isAvailableForMentoring ? 'bg-green-500' : 'bg-red-500'} mr-2`}></div>
-                <h3 className="text-lg font-medium text-gray-800">
-                  {formData.isAvailableForMentoring ? 'Open to New Mentorships' : 'Not Currently Available'}
-                </h3>
-              </div>
-              {isEditing && (
-                <div className="flex items-center">
-                  <label className="mr-2 text-sm text-gray-700" htmlFor="toggle-availability">
-                    {formData.isAvailableForMentoring ? 'Available' : 'Unavailable'}
-                  </label>
-                  <div className="relative inline-block w-10 mr-2 align-middle select-none">
-                    <input 
-                      type="checkbox" 
-                      name="toggle-availability" 
-                      id="toggle-availability" 
-                      className="sr-only peer"
-                      checked={formData.isAvailableForMentoring}
-                      onChange={(e) => setFormData(prev => ({ ...prev, isAvailableForMentoring: e.target.checked }))}
-                    />
-                    <div className="w-10 h-5 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-green-600"></div>
-                  </div>
-                </div>
-              )}
-            </div>
-            {!isEditing && (
-              <p className="mt-2 text-sm text-gray-600">
-                {formData.isAvailableForMentoring 
-                  ? `You're currently visible to students looking for mentors and can receive new mentorship requests.` 
-                  : `You won't receive new mentorship requests until you change your availability status.`}
-              </p>
-            )}
-          </div>
-
-          {isEditing && (
-            <>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Preferred Mentorship Type
-                </label>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                  {['One-on-one Mentoring', 'Group Mentoring', 'Career Coaching', 'Project-based Mentoring', 'Interview Preparation', 'Resume Review'].map((type) => (
-                    <div key={type} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id={`mentorship-type-${type.toLowerCase().replace(/\s+/g, '-')}`}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <label htmlFor={`mentorship-type-${type.toLowerCase().replace(/\s+/g, '-')}`} className="ml-2 block text-sm text-gray-700">
-                        {type}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Preferred Student Year
-                </label>
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-                  {['First Year', 'Second Year', 'Third Year', 'Fourth Year', 'Graduate'].map((year) => (
-                    <div key={year} className="flex items-center">
-                      <input
-                        type="checkbox"
-                        id={`student-year-${year.toLowerCase().replace(/\s+/g, '-')}`}
-                        className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
-                      />
-                      <label htmlFor={`student-year-${year.toLowerCase().replace(/\s+/g, '-')}`} className="ml-2 block text-sm text-gray-700">
-                        {year}
-                      </label>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Maximum Number of Mentees
-                </label>
-                <select
-                  name="maxMentees"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
-                >
-                  <option value="1">1 mentee at a time</option>
-                  <option value="2">2 mentees at a time</option>
-                  <option value="3">3 mentees at a time</option>
-                  <option value="4">4 mentees at a time</option>
-                  <option value="5">5+ mentees at a time</option>
-                </select>
-              </div>
-            </>
-          )}
-        </div>
-      </section>
-
       {/* Impact Statistics */}
       <section className="bg-white rounded-lg shadow-md p-6">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-2xl font-semibold">Your Impact</h2>
-          <a 
-            href="/analytics" 
-            className="text-indigo-600 hover:text-indigo-800 text-sm font-medium flex items-center"
-          >
-            <span>View Detailed Analytics</span>
-            <svg className="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path>
-            </svg>
-          </a>
-        </div>
+        <h2 className="text-2xl font-semibold mb-6">Your Impact</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-indigo-50 p-4 rounded-lg">
             <h3 className="text-lg font-medium text-indigo-900">Students Mentored</h3>

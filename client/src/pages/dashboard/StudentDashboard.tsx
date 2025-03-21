@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { 
@@ -11,7 +11,6 @@ import {
   BriefcaseIcon,
   DocumentTextIcon
 } from '@heroicons/react/24/outline';
-import ErrorDisplay from '../../components/common/ErrorDisplay';
 
 interface Mentor {
   _id: string;
@@ -116,32 +115,53 @@ const StudentDashboard: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Move fetchDashboardData to useCallback for better retry handling
-  const fetchDashboardData = useCallback(async () => {
-    try {
-      setLoading(true);
-      setError(null);
-      
-      // For development, always use mock data to ensure the dashboard loads
-      // In production, we would try the API calls first
-      const useMockData = true; // Set to false to attempt real API calls
-      
-      if (!useMockData) {
-        // Add a delay to simulate network latency
-        await new Promise(resolve => setTimeout(resolve, 1000));
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      try {
+        setLoading(true);
         
-        try {
-          // Actual API calls would go here
-          // ... API calls ...
-          setLoading(false);
-        } catch (apiError) {
-          throw apiError;
-        }
-      } else {
-        // Simulate network delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // In a real implementation, these would be actual API calls
+        // For now, we'll simulate the data
         
-        // Set mock data directly
+        // Fetch recommended mentors
+        const mentorsResponse = await axios.get<MentorsResponse>('/api/profile/mentors');
+        setMentors(mentorsResponse.data.data.mentors);
+        
+        // Fetch mentorship status
+        const mentorshipsResponse = await axios.get<MentorshipsResponse>('/api/mentorship/my-mentorships');
+        setMentorships(mentorshipsResponse.data.data.mentorships);
+        
+        // Fetch recommended resources
+        const resourcesResponse = await axios.get<ResourcesResponse>('/api/resources?limit=3');
+        setResources(resourcesResponse.data.data.resources);
+        
+        // Fetch upcoming events
+        const eventsResponse = await axios.get<UpcomingEventsResponse>('/api/events/upcoming');
+        setUpcomingEvents(eventsResponse.data.data.events);
+        
+        // Fetch unread message count
+        const messagesResponse = await axios.get<UnreadMessagesResponse>('/api/messages/unread/count');
+        
+        // Update stats
+        setStats({
+          mentorshipRequests: mentorshipsResponse.data.data.mentorships.filter(
+            (m: MentorshipStatus) => m.status === 'pending'
+          ).length,
+          activeMentorships: mentorshipsResponse.data.data.mentorships.filter(
+            (m: MentorshipStatus) => m.status === 'active'
+          ).length,
+          upcomingEvents: eventsResponse.data.data.events.length,
+          unreadMessages: messagesResponse.data.data.count,
+          savedResources: 5 // Mock data
+        });
+        
+        setLoading(false);
+      } catch (err) {
+        console.error('Error fetching dashboard data:', err);
+        setError('Failed to load dashboard data. Please try again later.');
+        setLoading(false);
+        
+        // For demo purposes, set mock data
         setMentors([
           {
             _id: '1',
@@ -275,29 +295,11 @@ const StudentDashboard: React.FC = () => {
           unreadMessages: 3,
           savedResources: 5
         });
-        
-        setLoading(false);
       }
-    } catch (err) {
-      console.error('Error fetching dashboard data:', err);
-      
-      // Check if it's a network error
-      if (err && typeof err === 'object' && 'isAxiosError' in err && !err.response) {
-        setError('Network error. Please check your internet connection.');
-      } else {
-        setError('Failed to load dashboard data. Please try again later.');
-      }
-      
-      setLoading(false);
-      
-      // Set mock data anyway to ensure something displays
-      // ... mock data setup ...
-    }
-  }, []);
-
-  useEffect(() => {
+    };
+    
     fetchDashboardData();
-  }, [fetchDashboardData]);
+  }, []);
 
   const handleRequestMentorship = async (mentorId: string) => {
     try {
@@ -325,7 +327,12 @@ const StudentDashboard: React.FC = () => {
   }
 
   if (error) {
-    return <ErrorDisplay message={error} retry={fetchDashboardData} />;
+    return (
+      <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
+        <strong className="font-bold">Error!</strong>
+        <span className="block sm:inline"> {error}</span>
+      </div>
+    );
   }
 
   return (
