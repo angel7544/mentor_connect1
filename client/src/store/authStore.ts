@@ -25,6 +25,27 @@ interface AuthResponse {
 axios.defaults.baseURL = 'http://localhost:5000';
 console.log('Axios base URL set to:', axios.defaults.baseURL);
 
+// Add a retry mechanism for failed requests
+axios.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    
+    // If the error is due to a network issue and hasn't been retried yet
+    if (error.message.includes('Network Error') && !originalRequest._retry) {
+      console.log('Network error detected, retrying request...');
+      originalRequest._retry = true;
+      
+      // Wait a second before retrying
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      return axios(originalRequest);
+    }
+    
+    return Promise.reject(error);
+  }
+);
+
 // Log all request and response data for debugging
 const logNetworkActivity = () => {
   // Request debugging
@@ -69,17 +90,43 @@ const logNetworkActivity = () => {
 // Initialize request/response logging
 logNetworkActivity();
 
+// Add localStorage persistence for authentication
+const getStoredAuthState = () => {
+  try {
+    const storedAuth = localStorage.getItem('auth');
+    if (storedAuth) {
+      const parsedAuth = JSON.parse(storedAuth);
+      console.log('Retrieved stored auth state:', parsedAuth.isAuthenticated);
+      return parsedAuth;
+    }
+  } catch (error) {
+    console.error('Error parsing stored auth state:', error);
+    localStorage.removeItem('auth');
+  }
+  return {
+    user: null,
+    token: null,
+    isAuthenticated: false,
+    isLoading: false,
+    error: null
+  };
+};
+
 // Simple auth store
 const useAuthStore = create((set) => ({
-  token: localStorage.getItem('token'),
-  refreshToken: localStorage.getItem('refreshToken'),
-  user: null,
-  isLoading: false,
-  isAuthenticated: !!localStorage.getItem('token'),
+  // Initial state from localStorage or default values
+  ...getStoredAuthState(),
 
   register: async (userData) => {
-    set({ isLoading: true });
+    set({ isLoading: true, error: null });
     try {
+      // Validate required fields
+      if (!userData.email || !userData.password || !userData.firstName || !userData.lastName) {
+        const errorMessage = 'All required fields must be filled in';
+        set({ isLoading: false, error: errorMessage });
+        return { success: false, error: errorMessage };
+      }
+      
       // Log the exact data being sent
       console.log('Registering user with data:', JSON.stringify(userData, null, 2));
       
@@ -168,36 +215,57 @@ const useAuthStore = create((set) => ({
     }
   },
 
-  login: async (credentials) => {
-    set({ isLoading: true });
+  login: async (loginData: { email: string; password: string } | string, secondParam?: string) => {
     try {
-      console.log('Logging in with credentials:', JSON.stringify(credentials, null, 2));
+      set({ isLoading: true, error: null });
+      
+      // Handle both object-style and separate parameter calls
+      const email = typeof loginData === 'object' ? loginData.email : loginData;
+      const password = typeof loginData === 'object' ? loginData.password : secondParam;
+      
+      console.log('Logging in with credentials:', JSON.stringify({ email, password }, null, 2));
+      
+      if (!email || !password) {
+        const errorMessage = 'Email and password are required';
+        console.error(errorMessage);
+        set({ isLoading: false, error: errorMessage });
+        return { success: false, error: errorMessage };
+      }
       
       // Create a properly formatted payload
       const payload = {
-        email: credentials.email,
-        password: credentials.password
+        email,
+        password
       };
       
       const response = await axios.post<AuthResponse>('/api/auth/login', payload);
       console.log('Login response:', response.data);
       
       // Extract data from the response
-      const { success, data } = response.data;
+      const { success, data: responseData } = response.data;
       
-      if (success && data) {
-        const { token, refreshToken, user } = data;
+      if (success && responseData) {
+        const { token, refreshToken, user } = responseData;
         
         localStorage.setItem('token', token);
         localStorage.setItem('refreshToken', refreshToken);
         
         set({ 
-          token, 
-          refreshToken,
           user, 
+          token, 
           isAuthenticated: true, 
-          isLoading: false 
+          isLoading: false, 
+          error: null 
         });
+        
+        // Store auth state in localStorage
+        localStorage.setItem('auth', JSON.stringify({ 
+          user, 
+          token, 
+          isAuthenticated: true, 
+          isLoading: false, 
+          error: null 
+        }));
         
         toast.success('Login successful!');
         return { success: true };
@@ -224,10 +292,18 @@ const useAuthStore = create((set) => ({
   },
 
   logout: () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('refreshToken');
-    set({ token: null, refreshToken: null, user: null, isAuthenticated: false });
-    toast.success('Logged out successfully');
+    // Clear localStorage
+    localStorage.removeItem('auth');
+    
+    // Clear state
+    set({ 
+      user: null, 
+      token: null, 
+      isAuthenticated: false, 
+      isLoading: false 
+    });
+    
+    console.log('User logged out, auth state cleared');
   },
 
   getProfile: async () => {
@@ -245,9 +321,8 @@ const useAuthStore = create((set) => ({
     } catch (error) {
       console.error('Get profile error:', error);
       if (error.response?.status === 401) {
-        localStorage.removeItem('token');
-        localStorage.removeItem('refreshToken');
-        set({ token: null, refreshToken: null, user: null, isAuthenticated: false });
+        localStorage.removeItem('auth'); // Updated from token removal
+        set({ token: null, user: null, isAuthenticated: false });
       }
     }
   }
@@ -256,7 +331,18 @@ const useAuthStore = create((set) => ({
 // Add axios interceptor to handle auth
 axios.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
+    // Get token from local storage auth object
+    let token;
+    try {
+      const authData = localStorage.getItem('auth');
+      if (authData) {
+        const parsed = JSON.parse(authData);
+        token = parsed.token;
+      }
+    } catch (e) {
+      console.error('Error parsing auth data:', e);
+    }
+    
     if (token) {
       config.headers = config.headers || {};
       config.headers.Authorization = `Bearer ${token}`;
@@ -286,4 +372,4 @@ axios.interceptors.response.use(
   }
 );
 
-export default useAuthStore; 
+export default useAuthStore;

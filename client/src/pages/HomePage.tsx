@@ -1,352 +1,246 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowRightIcon } from '@heroicons/react/24/outline';
-import useAuthStore from '../store/authStore';
 
 const HomePage: React.FC = () => {
-  const { isAuthenticated } = useAuthStore();
-  
   return (
-    <div className="relative overflow-hidden">
-      {/* Hero section */}
-      <div className="pt-10 sm:pt-16 lg:pt-8 lg:pb-14 lg:overflow-hidden">
-        <div className="mx-auto max-w-7xl lg:px-8">
-          <div className="lg:grid lg:grid-cols-2 lg:gap-8">
-            <div className="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 sm:text-center lg:px-0 lg:text-left lg:flex lg:items-center">
-              <div className="lg:py-24">
-                <h1 className="mt-4 text-4xl font-extrabold text-gray-900 tracking-tight sm:mt-5 sm:text-6xl lg:mt-6 xl:text-6xl">
-                  <span className="block">Connect with</span>
-                  <span className="block text-primary-600">Alumni Mentors</span>
-                </h1>
-                <p className="mt-3 text-base text-gray-500 sm:mt-5 sm:text-xl lg:text-lg xl:text-xl">
-                  MentorConnect helps students connect with alumni mentors for career guidance, 
-                  professional development, and networking opportunities.
-                </p>
-                <div className="mt-10 sm:mt-12">
-                  {isAuthenticated ? (
-                    <Link
-                      to="/dashboard"
-                      className="btn btn-primary inline-flex items-center px-6 py-3 text-base font-medium rounded-md shadow-sm"
-                    >
-                      Go to Dashboard
-                      <ArrowRightIcon className="ml-2 -mr-1 h-5 w-5" aria-hidden="true" />
-                    </Link>
-                  ) : (
-                    <div className="flex flex-col sm:flex-row gap-4">
-                      <Link
-                        to="/register"
-                        className="btn btn-primary inline-flex items-center px-6 py-3 text-base font-medium rounded-md shadow-sm"
-                      >
-                        Get Started
-                        <ArrowRightIcon className="ml-2 -mr-1 h-5 w-5" aria-hidden="true" />
-                      </Link>
-                      <Link
-                        to="/login"
-                        className="btn btn-outline inline-flex items-center px-6 py-3 text-base font-medium rounded-md"
-                      >
-                        Sign In
-                      </Link>
-                    </div>
-                  )}
-                </div>
-              </div>
+    <div className="min-h-screen flex flex-col bg-gradient-to-br from-indigo-50 to-white">
+      {/* Header/Navigation */}
+      <header className="border-b border-gray-100 bg-white/80 backdrop-blur-sm shadow-sm">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center">
+            <div className="h-10 w-10 rounded-full bg-indigo-600 flex items-center justify-center text-white font-bold text-lg mr-3">
+              MC
             </div>
-            <div className="mt-12 -mb-16 sm:-mb-48 lg:m-0 lg:relative">
-              <div className="mx-auto max-w-md px-4 sm:max-w-2xl sm:px-6 lg:max-w-none lg:px-0">
-                <img
-                  className="w-full lg:absolute lg:inset-y-0 lg:left-0 lg:h-full lg:w-auto lg:max-w-none"
-                  src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80"
-                  alt="Students collaborating"
-                />
-              </div>
-            </div>
+            <span className="text-xl font-bold text-gray-900">MentorConnect</span>
+          </div>
+          <nav className="hidden md:flex items-center space-x-8">
+            <a href="#features" className="text-gray-600 hover:text-indigo-600 transition-colors">Features</a>
+            <a href="#how-it-works" className="text-gray-600 hover:text-indigo-600 transition-colors">How It Works</a>
+            <a href="#testimonials" className="text-gray-600 hover:text-indigo-600 transition-colors">Testimonials</a>
+            <a href="#faq" className="text-gray-600 hover:text-indigo-600 transition-colors">FAQ</a>
+          </nav>
+          <div className="flex items-center space-x-4">
+            <Link 
+              to="/login" 
+              className="text-indigo-600 hover:text-indigo-800 font-medium transition-colors"
+            >
+              Sign In
+            </Link>
+            <Link 
+              to="/register" 
+              className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg font-medium transition-colors"
+            >
+              Get Started
+            </Link>
           </div>
         </div>
-      </div>
+      </header>
 
-      {/* Features section */}
-      <div className="py-16 sm:py-24 lg:py-32 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center">
-            <h2 className="text-base font-semibold text-primary-600 tracking-wide uppercase">Features</h2>
-            <p className="mt-1 text-4xl font-extrabold text-gray-900 sm:text-5xl sm:tracking-tight lg:text-6xl">
-              How MentorConnect Works
+      {/* Hero Section */}
+      <section className="py-20 px-4">
+        <div className="container mx-auto max-w-6xl flex flex-col lg:flex-row items-center">
+          <div className="lg:w-1/2 lg:pr-12 mb-12 lg:mb-0">
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight mb-6">
+              Connect with mentors who've been there
+            </h1>
+            <p className="text-lg text-gray-600 mb-8 max-w-lg">
+              MentorConnect helps students connect with alumni mentors for career guidance,
+              skill development, and networking opportunities to jumpstart their professional journey.
             </p>
-            <p className="max-w-xl mt-5 mx-auto text-xl text-gray-500">
-              Our platform makes it easy to connect students with alumni mentors.
-            </p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Link 
+                to="/register?role=student"
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg font-medium text-center transition-all shadow-lg hover:shadow-xl"
+              >
+                Find a Mentor
+              </Link>
+              <Link 
+                to="/register?role=alumni"
+                className="bg-white hover:bg-gray-50 text-indigo-600 border border-indigo-200 px-6 py-3 rounded-lg font-medium text-center transition-all shadow-md hover:shadow-lg"
+              >
+                Become a Mentor
+              </Link>
+            </div>
           </div>
-
-          <div className="mt-12">
-            <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="pt-6">
-                <div className="flow-root bg-gray-50 rounded-lg px-6 pb-8">
-                  <div className="-mt-6">
-                    <div>
-                      <span className="inline-flex items-center justify-center p-3 bg-primary-500 rounded-md shadow-lg">
-                        <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
-                      </span>
-                    </div>
-                    <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">Mentorship Matching</h3>
-                    <p className="mt-5 text-base text-gray-500">
-                      Get matched with alumni mentors based on your career interests, skills, and goals.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-6">
-                <div className="flow-root bg-gray-50 rounded-lg px-6 pb-8">
-                  <div className="-mt-6">
-                    <div>
-                      <span className="inline-flex items-center justify-center p-3 bg-primary-500 rounded-md shadow-lg">
-                        <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                        </svg>
-                      </span>
-                    </div>
-                    <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">Session Scheduling</h3>
-                    <p className="mt-5 text-base text-gray-500">
-                      Schedule 1-on-1 mentoring sessions based on mentor availability.
-                    </p>
-                  </div>
-                </div>
-              </div>
-
-              <div className="pt-6">
-                <div className="flow-root bg-gray-50 rounded-lg px-6 pb-8">
-                  <div className="-mt-6">
-                    <div>
-                      <span className="inline-flex items-center justify-center p-3 bg-primary-500 rounded-md shadow-lg">
-                        <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a1.994 1.994 0 01-1.414-.586m0 0L11 14h4a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2v4l.586-.586z" />
-                        </svg>
-                      </span>
-                    </div>
-                    <h3 className="mt-8 text-lg font-medium text-gray-900 tracking-tight">Direct Messaging</h3>
-                    <p className="mt-5 text-base text-gray-500">
-                      Communicate directly with mentors through our secure messaging system.
-                    </p>
-                  </div>
-                </div>
-              </div>
+          <div className="lg:w-1/2">
+            <div className="relative">
+              <div className="absolute -top-6 -left-6 w-24 h-24 bg-yellow-200 rounded-full opacity-50"></div>
+              <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-indigo-200 rounded-full opacity-50"></div>
+              <img 
+                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1171&q=80" 
+                alt="Mentoring session" 
+                className="relative z-10 rounded-xl shadow-2xl"
+              />
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <section className="text-gray-600 body-font"> 
-  <div className="container px-5 py-24 mx-auto">
-    <div className="flex flex-col text-center w-full mb-20">
-      <h1 className="text-2xl font-medium title-font mb-4 text-gray-900 tracking-widest">OUR TEAM</h1>
-      <p className="lg:w-2/3 mx-auto leading-relaxed text-base">Whatever cardigan tote bag tumblr hexagon brooklyn asymmetrical gentrify, subway tile poke farm-to-table. Franzen you probably haven't heard of them.</p>
-    </div>
-    <div className="flex flex-wrap -m-4">
-      <div className="p-4 lg:w-1/2">
-        <div className="h-full flex sm:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
-          <img alt="team" className="flex-shrink-0 rounded-lg w-48 h-48 object-cover object-center sm:mb-0 mb-4" src="https://media.licdn.com/dms/image/v2/D4D03AQFzSZQ3JBZ3vQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1728229346985?e=1747872000&v=beta&t=GpYiPxS7VFMAEdUQyJkFRzynYZQk3n2FXrjcngevi_4"/>
-          <div className="flex-grow sm:pl-8">
-            <h2 className="title-font font-medium text-lg text-gray-900">Ashutosh Kumar</h2>
-            <h3 className="text-gray-500 mb-3">Project Lead</h3>
-            <p className="mb-4">DIY tote bag drinking vinegar cronut adaptogen squid fanny pack vaporware.</p>
-            <span className="inline-flex">
-            <a href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                  <path d="M18 2h-3a5 5 0  00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
+      {/* Feature Section */}
+      <section id="features" className="py-20 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">How MentorConnect Helps</h2>
+            <p className="text-gray-600 max-w-2xl mx-auto">
+              Our platform provides all the tools needed to build meaningful mentoring relationships 
+              and advance your personal and professional growth.
+            </p>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
-              </a>
-              <a href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                  <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Smart Matching</h3>
+              <p className="text-gray-600">
+                Our intelligent matching algorithm connects students with alumni mentors based on 
+                career goals, skills, interests, and academic background.
+              </p>
+            </div>
+            
+            <div className="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                 </svg>
-              </a>
-              <a 
-  href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-  <svg 
-    fill="none" 
-    stroke="currentColor" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    strokeWidth="2" 
-    className="w-5 h-5" 
-    viewBox="0 0 24 24">
-    <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-  </svg>
-</a>
-
-            </span>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Integrated Messaging</h3>
+              <p className="text-gray-600">
+                Communicate easily with your mentor or mentee through our secure messaging system. 
+                Schedule meetings, share resources, and track progress all in one place.
+              </p>
+            </div>
+            
+            <div className="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Resource Library</h3>
+              <p className="text-gray-600">
+                Access a curated library of resources including articles, videos, templates, and guides 
+                to help you make the most of your mentoring relationship.
+              </p>
+            </div>
+            
+            <div className="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Event Management</h3>
+              <p className="text-gray-600">
+                Discover, register for, and attend virtual and in-person mentoring events, workshops, 
+                and networking opportunities tailored to your interests.
+              </p>
+            </div>
+            
+            <div className="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Privacy & Safety</h3>
+              <p className="text-gray-600">
+                Your privacy and safety are our top priorities. All mentoring relationships are monitored, 
+                and we provide guidelines to ensure positive interactions.
+              </p>
+            </div>
+            
+            <div className="bg-gray-50 p-8 rounded-xl shadow-sm hover:shadow-md transition-shadow">
+              <div className="w-14 h-14 bg-indigo-100 rounded-lg flex items-center justify-center mb-6">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold text-gray-900 mb-3">Progress Tracking</h3>
+              <p className="text-gray-600">
+                Set goals, track your progress, and celebrate achievements with built-in milestone tracking 
+                and success metrics for both mentors and mentees.
+              </p>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="p-4 lg:w-1/2">
-        <div className="h-full flex sm:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
-          <img alt="team" className="flex-shrink-0 rounded-lg w-48 h-48 object-cover object-center sm:mb-0 mb-4" src="https://media.licdn.com/dms/image/v2/D5603AQEKFxNGtE0AYg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1727548244056?e=1747872000&v=beta&t=48luPokfDSt4vR-5FykOWru15j2b-8DhjGOPe1z7pfg"/>
-          <div className="flex-grow sm:pl-8">
-            <h2 className="title-font font-medium text-lg text-gray-900">Sneha Kumari</h2>
-            <h3 className="text-gray-500 mb-3">Project Manager</h3>
-            <p className="mb-4">DIY tote bag drinking vinegar cronut adaptogen squid fanny pack vaporware.</p>
-            <span className="inline-flex">
-            <a href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                  <path d="M18 2h-3a5 5 0  00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-                </svg>
-              </a>
-              <a href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                  <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
-                </svg>
-              </a>
-              <a 
-  href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-  <svg 
-    fill="none" 
-    stroke="currentColor" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    strokeWidth="2" 
-    className="w-5 h-5" 
-    viewBox="0 0 24 24">
-    <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-  </svg>
-</a>
+      </section>
 
-            </span>
-          </div>
-        </div>
-      </div>
-      
-      <div className="p-4 lg:w-1/2">
-        <div className="h-full flex sm:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
-          <img alt="team" className="flex-shrink-0 rounded-lg w-48 h-48 object-cover object-center sm:mb-0 mb-4" src="https://media.licdn.com/dms/image/v2/D4D03AQG9heV8RJilig/profile-displayphoto-shrink_400_400/B4DZRFefprG4Ag-/0/1736332410223?e=1747872000&v=beta&t=NdcFXuiG3npcxxbIMAcBuaf7COIeYUa8RUkRbEfVTGg"/>
-          <div className="flex-grow sm:pl-8">
-            <h2 className="title-font font-medium text-lg text-gray-900">Shivam Kumar Sinha</h2>
-            <h3 className="text-gray-500 mb-3">Web & UI Developer</h3>
-            <p className="mb-4">DIY tote bag drinking vinegar cronut adaptogen squid fanny pack vaporware.</p>
-            <span className="inline-flex">
-            <a href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                  <path d="M18 2h-3a5 5 0  00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-                </svg>
-              </a>
-              <a href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                  <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
-                </svg>
-              </a>
-              <a 
-  href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-  <svg 
-    fill="none" 
-    stroke="currentColor" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    strokeWidth="2" 
-    className="w-5 h-5" 
-    viewBox="0 0 24 24">
-    <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-  </svg>
-</a>
-
-            </span>
-          </div>
-        </div>
-      </div>
-      <div className="p-4 lg:w-1/2">
-        <div className="h-full flex sm:flex-row flex-col items-center sm:justify-start justify-center text-center sm:text-left">
-          <img alt="team" className="flex-shrink-0 rounded-lg w-48 h-48 object-cover object-center sm:mb-0 mb-4" src="https://media.licdn.com/dms/image/v2/D4D03AQFinZ5z30I1nQ/profile-displayphoto-shrink_400_400/B4DZTRVNVDGkAk-/0/1738678785903?e=1747872000&v=beta&t=j_Hjqh27QfCvmI_H7m-1sa7bvJgJGNXBOeSN6RSyQJ0"/>
-          <div className="flex-grow sm:pl-8">
-            <h2 className="title-font font-medium text-lg text-gray-900">Angel</h2>
-            <h3 className="text-gray-500 mb-3">AI Prompter</h3>
-            <p className="mb-4">DIY tote bag drinking vinegar cronut adaptogen squid fanny pack vaporware.</p>
-            <span className="inline-flex">
-            <a href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                  <path d="M18 2h-3a5 5 0  00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"></path>
-                </svg>
-              </a>
-              <a href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-                <svg fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" className="w-5 h-5" viewBox="0 0 24 24">
-                  <path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"></path>
-                </svg>
-              </a>
-              <a 
-  href="https://example.com" 
-  className="ml-2 text-gray-500 hover:text-gray-700" 
-  target="_blank" 
-  rel="noopener noreferrer">
-  <svg 
-    fill="none" 
-    stroke="currentColor" 
-    strokeLinecap="round" 
-    strokeLinejoin="round" 
-    strokeWidth="2" 
-    className="w-5 h-5" 
-    viewBox="0 0 24 24">
-    <path d="M21 11.5a8.38 8.38 0 01-.9 3.8 8.5 8.5 0 01-7.6 4.7 8.38 8.38 0 01-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 01-.9-3.8 8.5 8.5 0 014.7-7.6 8.38 8.38 0 013.8-.9h.5a8.48 8.48 0 018 8v.5z"></path>
-  </svg>
-</a>
-
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-      {/* CTA section */}
-      <div className="bg-primary-700">
-        <div className="max-w-2xl mx-auto text-center py-16 px-4 sm:py-20 sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-extrabold text-white sm:text-4xl">
-            <span className="block">Ready to boost your career?</span>
-            <span className="block">Start using MentorConnect today.</span>
-          </h2>
-          <p className="mt-4 text-lg leading-6 text-primary-200">
-            Join our community of students and alumni to share knowledge and build professional connections.
+      {/* CTA Section */}
+      <section className="py-20 bg-indigo-600 text-white">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-6">Ready to start your mentorship journey?</h2>
+          <p className="max-w-2xl mx-auto mb-8 text-indigo-100">
+            Join MentorConnect today and take the first step towards building relationships that will 
+            shape your future. It's free to get started!
           </p>
-          <Link
-            to="/register"
-            className="mt-8 w-full inline-flex items-center justify-center px-5 py-3 border border-transparent text-base font-medium rounded-md text-primary-600 bg-white hover:bg-primary-50 sm:w-auto"
-          >
-            Sign up for free
-          </Link>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link 
+              to="/register" 
+              className="bg-white text-indigo-600 hover:bg-indigo-50 px-8 py-3 rounded-lg font-medium transition-colors shadow-lg"
+            >
+              Create Your Account
+            </Link>
+            <Link 
+              to="/login" 
+              className="bg-indigo-700 hover:bg-indigo-800 text-white px-8 py-3 rounded-lg font-medium transition-colors shadow-lg"
+            >
+              Sign In
+            </Link>
+          </div>
         </div>
-      </div>
+      </section>
+
+      {/* Footer */}
+      <footer className="py-12 bg-gray-900 text-gray-400">
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
+            <div>
+              <h4 className="text-white font-medium mb-4">Quick Links</h4>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:text-white transition-colors">Home</a></li>
+                <li><a href="#features" className="hover:text-white transition-colors">Features</a></li>
+                <li><a href="#how-it-works" className="hover:text-white transition-colors">How It Works</a></li>
+                <li><a href="#testimonials" className="hover:text-white transition-colors">Testimonials</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-medium mb-4">Resources</h4>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:text-white transition-colors">Blog</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Support</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">FAQ</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Contact</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-medium mb-4">Legal</h4>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:text-white transition-colors">Privacy Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Terms of Service</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Cookie Policy</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">GDPR</a></li>
+              </ul>
+            </div>
+            <div>
+              <h4 className="text-white font-medium mb-4">Connect</h4>
+              <ul className="space-y-2">
+                <li><a href="#" className="hover:text-white transition-colors">Twitter</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">LinkedIn</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Instagram</a></li>
+                <li><a href="#" className="hover:text-white transition-colors">Facebook</a></li>
+              </ul>
+            </div>
+          </div>
+          <div className="pt-8 border-t border-gray-800 text-center">
+            <p>&copy; {new Date().getFullYear()} MentorConnect. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };
