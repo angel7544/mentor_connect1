@@ -6,6 +6,10 @@ import { IoMdMenu } from "react-icons/io";
 import { Link } from 'react-router-dom';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import useAuthStore from '../store/authStore';
+//  features 
+// Add these imports at the top of the file
+import { useState, useEffect } from 'react';
+import { IoSearchOutline } from 'react-icons/io5';
 
 
 const HomePage: React.FC = () => {
@@ -53,13 +57,13 @@ const HomePage: React.FC = () => {
               </button>
             </div>
 
-            {/* Mobile Menu Button */}
-            <div className="md:hidden">
+            {/* // Mobile Menu Button */}
+            <div className="md:hidden flex items-center">
               <button
                 onClick={() => setIsSidebarOpen(true)}
                 className="p-2 rounded-md text-gray-500 hover:text-gray-900"
               >
-                <IoMdMenu size={24} />
+                {IoMdMenu({ size: 24 })}
               </button>
             </div>
 
@@ -120,7 +124,7 @@ const HomePage: React.FC = () => {
                     onClick={() => setIsSidebarOpen(false)}
                     className="p-2 rounded-md text-gray-500 hover:text-gray-900"
                   >
-                    <MdCancel className="h-6 w-6" />
+                    {MdCancel({ size: 24 })}
                   </button>
                 </div>
                 <div className="flex flex-col space-y-4">
@@ -237,8 +241,8 @@ const HomePage: React.FC = () => {
         </div>
       </div>
 
-      {/* Rest of your existing code... */}
       <About/>
+      <Features/>
       <Team/>
       <Footer/>
       {/* Features section */}
@@ -284,7 +288,7 @@ const About: React.FC = () => {
           <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             <div className="rounded-xl bg-gray-50 p-8 shadow-sm hover:shadow-md transition-shadow">
               <img
-                src="/mentorship.jpg"
+                src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
                 alt="Personalized Mentorship"
                 className="h-48 w-full object-cover rounded-lg mb-6"
               />
@@ -295,7 +299,7 @@ const About: React.FC = () => {
             </div>
             <div className="rounded-xl bg-gray-50 p-8 shadow-sm hover:shadow-md transition-shadow">
               <img
-                src="/networking.jpg"
+                src="https://images.unsplash.com/photo-1515169067868-5387ec356754?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
                 alt="Networking Opportunities"
                 className="h-48 w-full object-cover rounded-lg mb-6"
               />
@@ -306,7 +310,7 @@ const About: React.FC = () => {
             </div>
             <div className="rounded-xl bg-gray-50 p-8 shadow-sm hover:shadow-md transition-shadow">
               <img
-                src="/career-growth.jpg"
+                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80"
                 alt="Career Growth"
                 className="h-48 w-full object-cover rounded-lg mb-6"
               />
@@ -347,6 +351,242 @@ const About: React.FC = () => {
 
 
 
+// Replace the existing Features component with this one
+const Features: React.FC = () => {
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [viewMode, setViewMode] = useState<'grid' | 'carousel'>('grid');
+  const [isAutoPlay, setIsAutoPlay] = useState(true);
+
+  const features = [
+    {
+      title: "Mentor-Student Matching",
+      description: "Advanced filtering system with AI-powered recommendations for perfect mentor matches.",
+      details: [
+        "Location and availability-based filtering",
+        "AI-powered mentor suggestions",
+        "Expertise matching algorithm"
+      ]
+    },
+    {
+      title: "Interactive Communication Tools",
+      description: "Comprehensive suite of communication tools for effective mentorship.",
+      details: [
+        "Built-in video conferencing",
+        "Resource sharing platform",
+        "Collaborative document editing"
+      ]
+    },
+    {
+      title: "Goal-Setting & Progress Tracking",
+      description: "Structured system for setting and tracking mentorship objectives.",
+      details: [
+        "Customizable goal templates",
+        "Progress milestone tracking",
+        "Feedback mechanism"
+      ]
+    },
+    {
+      title: "Enhanced User Profiles",
+      description: "Comprehensive profiles showcasing expertise and achievements.",
+      details: [
+        "Skill endorsements",
+        "Achievement showcase",
+        "Review system"
+      ]
+    },
+    {
+      title: "Smart Event Scheduling",
+      description: "Integrated calendar system for efficient meeting management.",
+      details: [
+        "Calendar integration",
+        "Automated reminders",
+        "Availability management"
+      ]
+    },
+    {
+      title: "Resource Library",
+      description: "Extensive collection of career development resources.",
+      details: [
+        "Curated content library",
+        "User contributions",
+        "Personalized recommendations"
+      ]
+    }
+  ];
+
+  const filteredFeatures = features.filter(feature =>
+    feature.title.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  useEffect(() => {
+    let timer: NodeJS.Timeout;
+    if (isAutoPlay && viewMode === 'carousel') {
+      timer = setInterval(() => {
+        setCurrentSlide((prev) => (prev + 1) % filteredFeatures.length);
+      }, 5000);
+    }
+    return () => clearInterval(timer);
+  }, [filteredFeatures.length, isAutoPlay, viewMode]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % filteredFeatures.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) => (prev - 1 + filteredFeatures.length) % filteredFeatures.length);
+  };
+
+  return (
+    <div className="bg-gray-50 py-24 sm:py-32" id="features">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-base font-semibold leading-7 text-primary-600">Platform Features</h2>
+          <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Everything you need to succeed
+          </p>
+          
+          {/* Search and View Toggle */}
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="relative w-full sm:w-96">
+              {IoSearchOutline({ 
+                className: "absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400",
+                size: 20 
+              })}
+              <input
+                type="text"
+                placeholder="Search features..."
+                className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+              />
+            </div>
+            <div className="flex items-center space-x-4">
+              <button
+                onClick={() => setViewMode('grid')}
+                className={`p-2 rounded-lg ${viewMode === 'grid' ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+              </button>
+              <button
+                onClick={() => setViewMode('carousel')}
+                className={`p-2 rounded-lg ${viewMode === 'carousel' ? 'bg-primary-600 text-white' : 'bg-gray-200'}`}
+              >
+                <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Features Display */}
+        <div className="mt-16 flow-root sm:mt-20">
+          {viewMode === 'grid' ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {filteredFeatures.map((feature, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                  className="relative bg-white p-6 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-300 group"
+                >
+                  <div className="absolute top-6 right-6 text-primary-600 transform group-hover:rotate-12 transition-transform">
+                    <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <h3 className="text-lg font-semibold text-gray-900 mb-4">{feature.title}</h3>
+                  <p className="text-gray-600 mb-4">{feature.description}</p>
+                  <ul className="space-y-2">
+                    {feature.details.map((detail, idx) => (
+                      <li key={idx} className="flex items-center text-sm text-gray-500">
+                        <svg className="h-4 w-4 text-primary-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                        </svg>
+                        {detail}
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              ))}
+            </div>
+          ) : (
+            <div className="relative">
+              <div className="overflow-hidden">
+                <motion.div
+                  className="flex transition-transform duration-500 ease-in-out"
+                  style={{
+                    transform: `translateX(-${currentSlide * 100}%)`,
+                    width: `${filteredFeatures.length * 100}%`,
+                  }}
+                >
+                  {filteredFeatures.map((feature, index) => (
+                    <div key={index} className="w-full px-4">
+                      <div className="bg-white p-8 rounded-2xl shadow-lg max-w-2xl mx-auto">
+                        <h3 className="text-2xl font-semibold text-gray-900 mb-4">{feature.title}</h3>
+                        <p className="text-gray-600 mb-6 text-lg">{feature.description}</p>
+                        <ul className="space-y-4">
+                          {feature.details.map((detail, idx) => (
+                            <li key={idx} className="flex items-center text-base text-gray-500">
+                              <svg className="h-5 w-5 text-primary-500 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                              {detail}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  ))}
+                </motion.div>
+              </div>
+
+              {/* Carousel Controls */}
+              <div className="absolute top-1/2 -translate-y-1/2 left-4">
+                <button
+                  onClick={prevSlide}
+                  className="p-2 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+              </div>
+              <div className="absolute top-1/2 -translate-y-1/2 right-4">
+                <button
+                  onClick={nextSlide}
+                  className="p-2 rounded-full bg-white shadow-lg hover:bg-gray-50 transition-colors"
+                >
+                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+
+              {/* Carousel Navigation Dots */}
+              <div className="flex justify-center mt-8 space-x-2">
+                {filteredFeatures.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`h-2 w-2 rounded-full transition-all duration-300 ${
+                      currentSlide === index ? 'bg-primary-600 w-4' : 'bg-gray-300'
+                    }`}
+                    onClick={() => setCurrentSlide(index)}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 const Team: React.FC = () => {
   const teamMembers = [
     {
@@ -361,18 +601,7 @@ const Team: React.FC = () => {
       image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d",
       linkedin: "https://linkedin.com/in/michael-chen"
     },
-    {
-      name: "Emily Rodriguez",
-      role: "Head of Operations",
-      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80",
-      linkedin: "https://linkedin.com/in/emily-rodriguez"
-    },
-    {
-      name: "David Kim",
-      role: "Lead Developer",
-      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e",
-      linkedin: "https://linkedin.com/in/david-kim"
-    }
+    
   ];
 
   return (
@@ -415,7 +644,7 @@ const Team: React.FC = () => {
                   rel="noopener noreferrer"
                   className="mt-4 inline-block text-white hover:text-primary-400 transition-colors duration-200"
                 >
-                  <FaLinkedin size={24} />
+                  {FaLinkedin({ size: 24 })}
                 </a>
               </div>
             </motion.div>
