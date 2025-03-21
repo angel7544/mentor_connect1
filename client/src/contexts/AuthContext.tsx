@@ -76,10 +76,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   useEffect(() => {
     if (token) {
       axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-      console.log('Auth token set in axios headers');
     } else {
       delete axios.defaults.headers.common['Authorization'];
-      console.log('Auth token removed from axios headers');
     }
   }, [token]);
 
