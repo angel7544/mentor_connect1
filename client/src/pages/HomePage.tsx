@@ -378,6 +378,15 @@ const Features: React.FC = () => {
       ]
     },
     {
+      "title": "Recommendation System",
+      "description": "AI-driven recommendation system that personalizes suggestions based on user preferences, location, and expertise.",
+      "details": [
+        "Location and availability-based filtering",
+        "AI-powered mentor suggestions",
+        "Expertise matching algorithm"
+      ]
+    },
+    {
       title: "Goal-Setting & Progress Tracking",
       description: "Structured system for setting and tracking mentorship objectives.",
       details: [
@@ -393,6 +402,15 @@ const Features: React.FC = () => {
         "Skill endorsements",
         "Achievement showcase",
         "Review system"
+      ]
+    },
+    {
+      "title": "Push Notifications System",
+      "description": "Real-time push notification system to keep users informed about updates, messages, and important events.",
+      "details": [
+        "Instant alerts for updates",
+        "Customizable notification preferences",
+        "Seamless cross-platform support"
       ]
     },
     {
