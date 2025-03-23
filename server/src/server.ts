@@ -38,10 +38,9 @@ collectDefaultMetrics({ register: client.register });
 
 // Configure CORS with specific options
 app.use(cors({
-  origin: 'http://localhost:3000', // Allow frontend origin
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true
+ origin: '*',
+ methods: ['GET', 'POST', 'PUT', 'DELETE'],
+ allowedHeaders: ['Content-Type', 'Authorization'],
 }));
 
 // Request logging middleware
