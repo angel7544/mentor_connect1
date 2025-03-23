@@ -8,6 +8,8 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const database_1 = require("./config/database");
 const helmet_1 = __importDefault(require("helmet"));
+// matric collections 
+const prom_client_1 = __importDefault(require("prom-client"));
 // Import middleware
 const error_middleware_1 = require("./middleware/error.middleware");
 const rate_limiter_middleware_1 = require("./middleware/rate-limiter.middleware");
@@ -23,6 +25,9 @@ const forum_routes_1 = __importDefault(require("./routes/forum.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 5000;
+//  create functuion to collect Defualt Matrics 
+const collectDefaultMetrics = prom_client_1.default.collectDefaultMetrics;
+collectDefaultMetrics({ register: prom_client_1.default.register });
 // Configure CORS with specific options
 app.use((0, cors_1.default)({
     origin: 'http://localhost:3000', // Allow frontend origin
@@ -38,8 +43,13 @@ app.use((req, res, next) => {
 // Middleware
 app.use(express_1.default.json());
 app.use((0, helmet_1.default)());
-// Apply standard rate limiting to all routes
-app.use(rate_limiter_middleware_1.standardLimiter);
+// create the  matric routes 
+app.get('/metrics', async (req, res) => {
+    console.log('Metrics route accessed'); // Log when the route is accessed
+    res.setHeader('Content-Type', prom_client_1.default.register.contentType);
+    const metrics = await prom_client_1.default.register.metrics();
+    res.send(metrics);
+});
 // API routes with specific rate limiters where needed
 app.use('/api/auth', rate_limiter_middleware_1.authLimiter, auth_routes_1.default); // Stricter limits for auth routes
 app.use('/api/profile', profile_routes_1.default);

@@ -1,14 +1,14 @@
-import nodemailer from 'nodemailer'
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.welcomeMailOptions = void 0;
 // Register   mail 
-
-
 // Welcome Email Template
-const welcomeMailOptions = (email:string, firstName:string) => {
-  return {
-    from: `"${process.env.company_name || 'MentorConnectAI'}" <${process.env.smtp_email}>`,
-    to: email,
-    subject: `🚀 ${firstName}, Welcome to MentorConnectAI! Your Journey Starts Here`,
-    html: `
+const welcomeMailOptions = (email, firstName) => {
+    return {
+        from: `"${process.env.company_name || 'MentorConnectAI'}" <${process.env.smtp_email}>`,
+        to: email,
+        subject: `🚀 ${firstName}, Welcome to MentorConnectAI! Your Journey Starts Here`,
+        html: `
     <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; text-align: center;">
         <h2 style="color: #333;">Hey ${firstName}, Welcome to MentorConnectAI! 🎉</h2>
         <p style="color: #555; font-size: 16px;">You're now part of a growing community of learners, mentors, and industry experts!</p>
@@ -52,7 +52,6 @@ const welcomeMailOptions = (email:string, firstName:string) => {
         </footer>
     </div>
     `,
-  };
+    };
 };
-
-export { welcomeMailOptions };
+exports.welcomeMailOptions = welcomeMailOptions;
