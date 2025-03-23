@@ -22,7 +22,7 @@ interface AuthResponse {
 }
 
 // Set the base URL for all axios requests
-axios.defaults.baseURL = 'http://localhost:5000';
+axios.defaults.baseURL = 'http://localhost:8000';
 console.log('Axios base URL set to:', axios.defaults.baseURL);
 
 // Log all request and response data for debugging
