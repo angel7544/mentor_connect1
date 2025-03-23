@@ -3,6 +3,10 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB, disconnectDB } from './config/database';
 import helmet from 'helmet';
+
+// matric collections 
+import client from 'prom-client'
+
 // Import middleware
 import { errorHandler, notFoundHandler } from './middleware/error.middleware';
 import { standardLimiter, authLimiter } from './middleware/rate-limiter.middleware';
@@ -23,6 +27,15 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
+//  create functuion to collect Defualt Matrics 
+
+const collectDefaultMetrics = client.collectDefaultMetrics;
+collectDefaultMetrics({ register: client.register });
+
+
+
+
+
 // Configure CORS with specific options
 app.use(cors({
   origin: 'http://localhost:3000', // Allow frontend origin
@@ -38,12 +51,23 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
+
 // Middleware
 app.use(express.json());
 app.use(helmet());
 
-// Apply standard rate limiting to all routes
-app.use(standardLimiter);
+
+
+
+// create the  matric routes 
+app.get('/metrics', async (req: Request, res: Response) => {
+  console.log('Metrics route accessed'); // Log when the route is accessed
+  res.setHeader('Content-Type', client.register.contentType);
+  const metrics = await client.register.metrics();
+  res.send(metrics);
+});
+
+
 
 // API routes with specific rate limiters where needed
 app.use('/api/auth', authLimiter, authRoutes);  // Stricter limits for auth routes
