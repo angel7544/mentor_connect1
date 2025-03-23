@@ -21,6 +21,7 @@ import ForumPage from './pages/forum/ForumPage';
 import NotFoundPage from './pages/NotFoundPage';
 import Chatbot from './pages/chatbot/chatbot';
 import ContactUs from './pages/ContactUs/ContactUs';
+import ContactPublic from './pages/ContactPublic';
 
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
@@ -41,6 +42,7 @@ function App() {
         {/* Public routes */}
         <Route >
           <Route path="/" element={<HomePage />} />
+          <Route path="/contact" element={<ContactPublic />} />
         </Route>
         
         {/* Auth routes */}

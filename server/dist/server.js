@@ -30,10 +30,9 @@ const collectDefaultMetrics = prom_client_1.default.collectDefaultMetrics;
 collectDefaultMetrics({ register: prom_client_1.default.register });
 // Configure CORS with specific options
 app.use((0, cors_1.default)({
-    origin: 'http://localhost:3000', // Allow frontend origin
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true
 }));
 // Request logging middleware
 app.use((req, res, next) => {
