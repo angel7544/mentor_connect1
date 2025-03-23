@@ -155,7 +155,7 @@ const MainLayout: React.FC = () => {
           )}
         </div>
       </div>
-
+          
       {/* Main content */}
       <div className="flex flex-1 flex-col md:pl-64">
         <div className="sticky top-0 z-10 bg-white pl-1 pt-1 sm:pl-3 sm:pt-3 md:hidden">

@@ -52,9 +52,13 @@ const HomePage: React.FC = () => {
               <button onClick={() => scrollToSection('features')} className="text-gray-500 hover:text-gray-900 px-1 pt-1 text-sm font-medium">
                 Features
               </button>
+              <button onClick={() => scrollToSection('fnq')} className="text-gray-500 hover:text-gray-900 px-1 pt-1 text-sm font-medium">
+                Fnq
+              </button>
               <button onClick={() => scrollToSection('team')} className="text-gray-500 hover:text-gray-900 px-1 pt-1 text-sm font-medium">
                 Team
               </button>
+
             </div>
 
             {/* // Mobile Menu Button */}
@@ -136,6 +140,9 @@ const HomePage: React.FC = () => {
                   </button>
                   <button onClick={() => scrollToSection('features')} className="text-gray-600 hover:text-gray-900 py-2">
                     Features
+                  </button>
+                  <button onClick={() => scrollToSection('fnq')} className="text-gray-600 hover:text-gray-900 py-2">
+                    fnq
                   </button>
                   <button onClick={() => scrollToSection('team')} className="text-gray-600 hover:text-gray-900 py-2">
                     Team
@@ -243,6 +250,7 @@ const HomePage: React.FC = () => {
 
       <About/>
       <Features/>
+      <Fnq/>
       <Team/>
       <Footer/>
       {/* Features section */}
@@ -681,6 +689,129 @@ const Team: React.FC = () => {
               </div>
             </motion.div>
           ))}
+        </div>
+      </div>
+    </div>
+  );
+};
+
+
+const Fnq: React.FC = () => {
+  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  
+  const faqs = [
+    {
+      question: "How does the mentor matching process work?",
+      answer: "Our AI-powered matching system analyzes your profile, career goals, and preferences to suggest the most compatible mentors. You can filter mentors by industry, expertise, location, and availability to find the perfect match for your needs."
+    },
+    {
+      question: "Is MentorConnect free for students?",
+      answer: "Yes! MentorConnect is completely free for students. We believe in making quality mentorship accessible to all students. Alumni mentors volunteer their time to give back to their communities and help shape the next generation of professionals."
+    },
+    {
+      question: "How often can I meet with my mentor?",
+      answer: "Meeting frequency is flexible and determined by you and your mentor. Most mentorship pairs meet bi-weekly or monthly, but you can establish a schedule that works best for both of you. Our platform makes it easy to schedule and manage your sessions."
+    },
+    {
+      question: "Can I change my mentor if we're not a good fit?",
+      answer: "Absolutely! We understand that chemistry is important in a mentorship relationship. If you feel your current mentor isn't the right match, you can request a new mentor at any time through your dashboard without any penalties."
+    },
+    {
+      question: "What kind of support can I expect from my mentor?",
+      answer: "Mentors provide guidance in various areas including career advice, skill development, networking opportunities, resume reviews, interview preparation, and industry insights. The specific support depends on your goals and your mentor's expertise."
+    },
+    {
+      question: "How long does a typical mentorship last?",
+      answer: "Mentorships typically last for 3-6 months, but many evolve into long-term professional relationships. You and your mentor can decide on the duration that best suits your development needs and goals."
+    }
+  ];
+
+  const toggleQuestion = (index: number) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  return (
+    <div className="bg-gray-50 pb-10 py-24  sm:py-32" id="fnq">
+      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+        <motion.div 
+          className="mx-auto max-w-2xl text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
+          <h2 className="text-base font-semibold leading-7 text-primary-600">FAQ</h2>
+          <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+            Frequently Asked Questions
+          </p>
+          <p className="mt-6 text-lg leading-8 text-gray-600">
+            Find answers to common questions about MentorConnect and how our platform can help you succeed.
+          </p>
+        </motion.div>
+        
+        <div className="mx-auto mt-16 max-w-3xl">
+          <motion.div 
+            className="space-y-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.2 }}
+          >
+            {faqs.map((faq, index) => (
+              <motion.div 
+                key={index}
+                className="bg-white rounded-xl shadow-sm overflow-hidden"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.1 }}
+                whileHover={{ scale: 1.01 }}
+              >
+                <button
+                  className="flex justify-between items-center w-full px-6 py-5 text-left"
+                  onClick={() => toggleQuestion(index)}
+                >
+                  <span className="text-lg font-medium text-gray-900">{faq.question}</span>
+                  <motion.span
+                    animate={{ rotate: openIndex === index ? 180 : 0 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <svg className="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </motion.span>
+                </button>
+                <motion.div
+                  initial={{ height: 0, opacity: 0 }}
+                  animate={{
+                    height: openIndex === index ? "auto" : 0,
+                    opacity: openIndex === index ? 1 : 0
+                  }}
+                  transition={{ duration: 0.3 }}
+                  className="overflow-hidden"
+                >
+                  <div className="px-6 pb-5 text-gray-600">
+                    {faq.answer}
+                  </div>
+                </motion.div>
+              </motion.div>
+            ))}
+          </motion.div>
+          
+          <motion.div 
+            className="mt-12 text-center"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.8 }}
+          >
+            <p className="text-gray-600 mb-4">Still have questions?</p>
+            <Link
+              to="/contact"
+              className="inline-flex items-center px-4 py-2 text-sm font-medium rounded-full bg-primary-600 text-white hover:bg-primary-700 transition-colors"
+            >
+              Contact Support
+              <svg className="ml-2 -mr-1 w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
+              </svg>
+            </Link>
+          </motion.div>
         </div>
       </div>
     </div>
