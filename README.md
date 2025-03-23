@@ -140,10 +140,10 @@ MentorConnect is a fully functional web-based platform that connects students wi
 
 ## Contributors
 
-- [Ashutosh Kumar](https://www.linkedin.com/in/ashukr321/) - [Ashutosh Portfolio](https://www.devashu.tech/)
-- [Shivam Kumar Sinha](https://www.linkedin.com/in/shivam-kumar-sinha-55aa9b273/)
-- [Angel Singh](https://www.linkedin.com/in/angel3002/)
-- [Sneha Kumari](https://www.linkedin.com/in/sneha-kumari-ss/) - [Sneha Portfolio](https://sneha108.vercel.app/)
+- Ashutosh Kumar [<img src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" />](https://www.linkedin.com/in/ashukr321/) [<img src="https://img.shields.io/badge/Portfolio-000000?style=flat&logo=About.me&logoColor=white" />](https://www.devashu.tech/) [<img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white" />](https://github.com/ashukr321)
+- Shivam Kumar Sinha [<img src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" />](https://www.linkedin.com/in/shivam-kumar-sinha-55aa9b273/) [<img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white" />](https://github.com/Shivamkumarsinha18)
+- Angel Singh [<img src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" />](https://www.linkedin.com/in/angel3002/) [<img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white" />](https://github.com/angel7544)
+- Sneha Kumari [<img src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" />](https://www.linkedin.com/in/sneha-kumari-ss/) [<img src="https://img.shields.io/badge/Portfolio-000000?style=flat&logo=About.me&logoColor=white" />](https://sneha108.vercel.app/) [<img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white" />](https://github.com/sneha-kumari-10)
 
 ## GitHub Repository
 
