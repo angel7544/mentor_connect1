@@ -32,11 +32,11 @@ const HomePage: React.FC = () => {
           <div className="flex justify-between items-center h-16">
             <div className="flex-shrink-0">
               <Link to="/" className="flex items-center">
-                {/* <img
+                <img
                   className="h-8 w-auto"
-                  src="/logo.png"
+                  src="logo192.png"
                   alt="MentorConnect"
-                /> */}
+                />
                 <span className="ml-2 text-xl font-bold text-primary-600">MentorConnect</span>
               </Link>
             </div>
@@ -122,8 +122,8 @@ const HomePage: React.FC = () => {
               <div className="p-4">
                 <div className="flex justify-between items-center mb-8">
                   <Link to="/" className="flex items-center">
-                    <img className="h-8 w-auto" src="/logo.png" alt="MentorConnect" />
-                  </Link>
+                    <img className="h-8 w-auto" src="/logo192.png" alt="MentorConnect" />
+                    <span className="ml-2 text-xl font-bold text-primary-600">MentorConnect</span>                  </Link>
                   <button
                     onClick={() => setIsSidebarOpen(false)}
                     className="p-2 rounded-md text-gray-500 hover:text-gray-900"
