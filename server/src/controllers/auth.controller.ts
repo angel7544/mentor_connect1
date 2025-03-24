@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { UserModel, IStudent, IAlumni, IAdmin } from '../models/user.model';
 import { comparePasswords, generateToken, generateRefreshToken } from '../utils/auth.utils';
 import { ObjectId } from 'mongodb';
-import { welcomeMailOptions } from '../utils/mailoptions';
+import { welcomeMailOptions,Subscriptions } from '../utils/mailoptions';
 import transporter from '../utils/mailtransport';
 /**
  * User signup controller - handles registration for students and alumni
@@ -269,3 +269,18 @@ export const getCurrentUser = async (req: Request, res: Response) => {
     });
   }
 }; 
+
+export const subscription = async (req: Request, res: Response)=>{
+  try{
+    const email = req.body.email;
+    console.log(email);
+    if(!email){
+      return res.status(400).json({message:"Enter vaid Email"})
+    }
+   await transporter.sendMail(Subscriptions(email));
+   return res.status(200).json({message:"Subscription Successfull"})
+    
+  }catch(error){
+    console.error('Error in subscription:', error);
+  }
+}

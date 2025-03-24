@@ -55,4 +55,58 @@ const welcomeMailOptions = (email:string, firstName:string) => {
   };
 };
 
-export { welcomeMailOptions };
+
+const Subscriptions = (email: string) => {
+  // Get the current date and time
+  const now = new Date();
+  const options: Intl.DateTimeFormatOptions = {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  };
+  const formattedDate = now.toLocaleString('en-US', options);
+
+  return {
+    from: `"${process.env.company_name || 'MentorConnectAI'}" <${process.env.smtp_email}>`,
+    to: email,
+    subject: `🎉 Thank You for Subscribing to MentorConnectAI!`,
+    html: `
+    <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9; text-align: center;">
+        <h2 style="color: #333;">Thank You for Subscribing! 🎉</h2>
+        <p style="color: #555; font-size: 16px;">You will receive notifications and updates from us shortly.</p>
+        
+        <h3 style="color: #333;">📅 ${formattedDate}</h3>
+        <p style="color: #555; font-size: 16px;">We are excited to have you on board!</p>
+        
+        <h3 style="color: #333;">🚀 What’s Next?</h3>
+        <p style="color: #555; font-size: 16px;">Here’s how you can make the most of your experience:</p>
+        
+        <ul style="list-style: none; padding: 0;">
+            <li style="margin: 10px 0; font-size: 16px;">✅ Connect with experienced **mentors**</li>
+            <li style="margin: 10px 0; font-size: 16px;">✅ Get **personalized career guidance**</li>
+            <li style="margin: 10px 0; font-size: 16px;">✅ Join **interactive Q&A sessions**</li>
+        </ul>
+
+        <a href="https://mentorconnect.ai/dashboard" 
+           style="display: inline-block; padding: 12px 24px; background-color: #1e90ff; color: #fff; 
+                  text-decoration: none; font-size: 16px; border-radius: 5px; margin: 20px 0;">
+          🎯 Set Up Your Profile
+        </a>
+
+        <h3 style="color: #333;">✨ Join Our Community</h3>
+        <p style="color: #555; font-size: 14px;">Stay updated and connect with fellow learners:</p>
+
+        <p style="color: #777; font-size: 12px; margin-top: 20px;">Need help? Our support team is just an email away.</p>
+        
+        <p style="color: #555; font-size: 14px; margin-top: 20px;">Best regards,<br><strong>The MentorConnectAI Team</strong></p>
+        
+    </div>
+    `,
+  };
+};
+
+export { welcomeMailOptions ,Subscriptions};
