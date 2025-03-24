@@ -229,12 +229,12 @@ const ContactPublic = () => {
             className="flex flex-col space-y-8"
           >
             <motion.div 
-              className="relative rounded-2xl overflow-hidden shadow-xl h-80 lg:h-96"
+              className="relative rounded-2xl overflow-hidden shadow-xl h-80 lg:h-86"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
               <img 
-                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80" 
+                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80" 
                 alt="Students collaborating" 
                 className="w-full h-full object-cover"
               />
@@ -246,7 +246,7 @@ const ContactPublic = () => {
               </div>
             </motion.div>
             
-            <div className="bg-white rounded-2xl shadow-lg p-6 space-y-6 border border-gray-100">
+            <div className="bg-white rounded-2xl shadow-lg p-4 space-y-4 border border-gray-100">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
