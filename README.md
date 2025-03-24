@@ -97,6 +97,31 @@ MentorConnect is a fully functional web-based platform that connects students wi
 - [Data Flow Diagram](./Final_DFD.drawio_page-0001.jpg)
 ![](./Final_DFD.drawio_page-0001.jpg)
 
+## Screenshots
+[IMG01](./demo/SC01.PNG)
+![](./demo/SC01.PNG)
+[IMG02](./demo/SC02.PNG)
+![](./demo/SC02.PNG)
+[IMG03](./demo/SC03.PNG)
+![](./demo/SC03.PNG)
+[IMG04](./demo/SC04.PNG)
+![](./demo/SC04.PNG)
+[IMG05](./demo/SC05.PNG)
+![](./demo/SC05.PNG)
+[IMG06](./demo/SC06.PNG)
+![](./demo/SC06.PNG)
+[IMG07](./demo/SC07.PNG)
+![](./demo/SC07.PNG)
+[IMG08](./demo/SC08.PNG)
+![](./demo/SC08.PNG)
+[IMG09](./demo/SC09.PNG)
+![](./demo/SC09.PNG)
+[IMG10](./demo/SC10.PNG)
+![](./demo/SC10.PNG)
+[IMG11](./demo/SC11.PNG)
+![](./demo/SC11.PNG)
+
+
 ## Getting Started
 ### Prerequisites
 
