@@ -2,54 +2,48 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
 import { Link } from 'react-router-dom';
-// Remove react-toastify import since you're using react-hot-toast
-// import 'react-toastify/dist/ReactToastify.css';
+import axios from 'axios';
 
 const ContactPublic = () => {
-  const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    subject: '',
-    message: ''
-  });
+  const [firstName, setFirstName] = useState('');
+  const [email, setEmail] = useState('');
+  const [subject, setSubject] = useState('');
+  const [message, setMessage] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({
-      ...prev,
-      [name]: value
-    }));
-  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Simulate API call
     try {
-      // Show loading toast
-      const loadingToast = toast.loading('Sending your message...');
+      const endpoint = '/api/auth/support';
+      const formData = {
+        firstName,
+        email,
+        subject,
+        message
+      };
       
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const response = await axios.post(`${axios.defaults.baseURL}${endpoint}`, formData);
       
-      // Dismiss loading toast and show success toast
-      toast.dismiss(loadingToast);
-      toast.success("Thank you for your message! We'll get back to you soon.");
-      
-      setFormData({
-        name: '',
-        email: '',
-        subject: '',
-        message: ''
-      });
+      if (response.status === 200) {
+        toast.success("Thank you for your message! We'll get back to you soon.");
+        // Reset form fields
+        setFirstName('');
+        setEmail('');
+        setSubject('');
+        setMessage('');
+      } else {
+        throw new Error('Failed to send message');
+      }
     } catch (error) {
-      toast.error("Something went wrong. Please try again later.");
+      toast.error('Failed to send message. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
   };
 
+  // Rest of the component remains the same...
   return (
     <div className="bg-gradient-to-b from-white to-gray-100 min-h-screen pt-20 pb-16">
       {/* Navigation Bubble */}
@@ -110,8 +104,8 @@ const ContactPublic = () => {
                       type="text"
                       id="name"
                       name="name"
-                      value={formData.name}
-                      onChange={handleChange}
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
                       required
                       className="pl-11 py-3 block w-full border-gray-300 rounded-lg shadow-sm 
                       focus:ring-primary-500 focus:border-primary-500 
@@ -136,8 +130,8 @@ const ContactPublic = () => {
                       type="email"
                       id="email"
                       name="email"
-                      value={formData.email}
-                      onChange={handleChange}
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
                       required
                       className="pl-11 py-3 block w-full border-gray-300 rounded-lg shadow-sm 
                       focus:ring-primary-500 focus:border-primary-500 
@@ -162,8 +156,8 @@ const ContactPublic = () => {
                   <select
                     id="subject"
                     name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
                     required
                     className="pl-11 py-3 block w-full border-gray-300 rounded-lg shadow-sm 
                     focus:ring-primary-500 focus:border-primary-500 
@@ -193,8 +187,8 @@ const ContactPublic = () => {
                   <textarea
                     id="message"
                     name="message"
-                    value={formData.message}
-                    onChange={handleChange}
+                    value={message}
+                    onChange={(e) => setMessage(e.target.value)}
                     required
                     rows={5}
                     className="block w-full border-gray-300 rounded-lg shadow-sm p-4
@@ -268,7 +262,7 @@ const ContactPublic = () => {
                   </svg>
                   Phone
                 </h3>
-                <p className="mt-2 text-gray-600">+1 (555) 123-4567</p>
+                <p className="mt-2 text-gray-600">(+91)7004246315</p>
               </div>
               
               <div>
@@ -278,7 +272,7 @@ const ContactPublic = () => {
                   </svg>
                   Email
                 </h3>
-                <p className="mt-2 text-gray-600">support@mentorconnect.edu</p>
+                <p className="mt-2 text-gray-600">coderashukr321@gmail.com</p>
               </div>
               
               <div>
@@ -291,8 +285,6 @@ const ContactPublic = () => {
                 </h3>
                 <p className="mt-2 text-gray-600">Amity University Patna, 801503</p>
               </div>
-              
-           
             </div>
           </motion.div>
         </div>
@@ -301,4 +293,4 @@ const ContactPublic = () => {
   );
 };
 
-export default ContactPublic
+export default ContactPublic;

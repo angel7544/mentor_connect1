@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { UserModel, IStudent, IAlumni, IAdmin } from '../models/user.model';
 import { comparePasswords, generateToken, generateRefreshToken } from '../utils/auth.utils';
 import { ObjectId } from 'mongodb';
-import { welcomeMailOptions,Subscriptions } from '../utils/mailoptions';
+import { welcomeMailOptions,Subscriptions,supportContactOpition } from '../utils/mailoptions';
 import transporter from '../utils/mailtransport';
 /**
  * User signup controller - handles registration for students and alumni
@@ -282,5 +282,19 @@ export const subscription = async (req: Request, res: Response)=>{
     
   }catch(error){
     console.error('Error in subscription:', error);
+  }
+}
+
+export const supportContact  = async (req: Request, res: Response)=>{
+  try{
+    const {firstName,email,subject,message} = req.body;
+    console.log(req.body);
+    if(!firstName || !email || !subject || !message){
+      return res.status(400).json({message:"Enter all fields"})
+    }
+     transporter.sendMail(supportContactOpition(firstName,email,subject,message));
+     return res.status(200).json({message:"Message Sent Successfully"})
+  } catch(error){
+    console.error('Error in support:', error);
   }
 }
