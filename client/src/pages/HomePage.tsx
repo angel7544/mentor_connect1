@@ -6,13 +6,14 @@ import { IoMdMenu } from "react-icons/io";
 import { Link,useLocation } from 'react-router-dom';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import useAuthStore from '../store/authStore';
+import  toast  from 'react-hot-toast';
 //  features 
 // Add these imports at the top of the file
 import { useState, useEffect } from 'react';
 import { IoSearchOutline } from 'react-icons/io5';
 
 import ReactGA from 'react-ga4';
-
+import axios from 'axios';
 
 
 const HomePage: React.FC = () => {
@@ -829,11 +830,98 @@ const Fnq: React.FC = () => {
 
 
 const Footer: React.FC = () => {
+  const [email, setEmail] = useState('');
+  const [isHovered, setIsHovered] = useState(false);
+  
+  console.log(email);
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const endpoint = '/api/auth/subscribe';
+      const response = await axios.post(`${axios.defaults.baseURL}${endpoint}`, { email });
+      if (response.status === 200) {
+        toast.success('Subscription successful!');
+        setEmail('');
+      }
+    } catch (error) {
+      toast.error('Subscription failed. Please try again.');
+    }
+  };
+
   return (
-    <div className="bg-gray-900 text-white py-6 text-center">
-      <p className="text-lg font-semibold">Mentor Connect</p>
-      <p className="text-sm mt-2">© 2025 Mentor Connect. All rights reserved.</p>
-    </div>
+    <motion.footer
+      className="bg-gradient-to-r from-gray-900 to-gray-800 text-white py-12"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.5 }}
+    >
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <motion.div
+          className="text-center"
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          <h2 className="text-3xl font-bold mb-6 bg-gradient-to-r from-blue-400 to-purple-500 bg-clip-text text-transparent">
+            Mentor Connect
+          </h2>
+          <p className="text-gray-300 mb-8 max-w-2xl mx-auto">
+            Join our newsletter to stay up to date with the latest mentorship opportunities and career insights.
+          </p>
+
+          <motion.form 
+            onSubmit={handleSubscribe}
+            className="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-md mx-auto"
+          >
+            <motion.div 
+              className="relative w-full"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Enter your email"
+                className="w-full px-6 py-3 rounded-full bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-300"
+                required
+              />
+            </motion.div>
+            
+            <motion.button
+              style={{width:"40%"}}
+              type="submit"
+              className="w-full  px-2 py-3 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 text-white font-medium hover:from-blue-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 transition-all duration-300"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onHoverStart={() => setIsHovered(true)}
+              onHoverEnd={() => setIsHovered(false)}
+            >
+              Subscribe
+              <motion.span
+                className="inline-block ml-2"
+                animate={{ x: isHovered ? 5 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                →
+              </motion.span>
+            </motion.button>
+          </motion.form>
+        </motion.div>
+
+        <motion.div
+          className="mt-12 pt-8 border-t border-gray-800 text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.4 }}
+        >
+          <p className="text-gray-400 text-sm">
+            © 2025 Mentor Connect. All rights reserved.
+          </p>
+        </motion.div>
+      </div>
+    </motion.footer>
   );
 };
 
