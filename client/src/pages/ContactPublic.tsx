@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 // Remove react-toastify import since you're using react-hot-toast
 // import 'react-toastify/dist/ReactToastify.css';
 
@@ -51,6 +52,19 @@ const ContactPublic = () => {
 
   return (
     <div className="bg-gradient-to-b from-white to-gray-100 min-h-screen pt-20 pb-16">
+      {/* Navigation Bubble */}
+      <Link to="/" className="fixed bottom-8 right-8 z-50">
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-primary-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+        </motion.div>
+      </Link>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
