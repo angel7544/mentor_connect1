@@ -122,6 +122,9 @@ const RegisterPage: React.FC = () => {
       // Always notify the user
       toast.error(submitError || 'Registration failed');
     }
+
+    // Track registration event with React-GA4
+    
   };
   
   // Show different fields based on selected role

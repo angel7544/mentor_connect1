@@ -3,6 +3,7 @@ import {  useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import useAuthStore from '../../store/authStore';
+import ReactGA from 'react-ga4';
 import Aos from 'aos';
 import 'aos/dist/aos.css';
 interface LoginFormData {
@@ -27,6 +28,7 @@ const LoginPage: React.FC = () => {
   
   const onSubmit = async (data: LoginFormData) => {
     try {
+      
       setSubmitError(null);
       console.log('Login form submitted with data:', data);
       
@@ -35,6 +37,14 @@ const LoginPage: React.FC = () => {
       
       if (result && result.success) {
         toast.success('Login successful!');
+        
+        ReactGA.event({
+          category: 'Authentication',
+          action: 'Login',
+          label: 'success',
+          value: 1,
+        });
+
         navigate('/dashboard');
       } else {
         setSubmitError(result?.error || 'Login failed. Please check your credentials.');
