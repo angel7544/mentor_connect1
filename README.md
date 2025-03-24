@@ -2,6 +2,7 @@
 
 A modern web platform connecting students with alumni mentors for career guidance and professional development.
 
+
 ## Problem Statement
 
 Strong mentorship connections between students and alumni play a crucial role in career growth, skill development, and academic guidance. However, traditional mentorship programs often lack structured engagement, effective communication tools, and goal-tracking mechanisms. To bridge this gap, a well-designed web platform is needed to facilitate meaningful and productive mentorship experiences.
@@ -21,7 +22,7 @@ MentorConnect is a fully functional web-based platform that connects students wi
 - **Feedback & Review System**: Collect feedback from users to improve the platform.
 - **Event Management**: Organize mentorship events, webinars, and workshops.
 - **Admin Panel**: Manage users, mentorship requests, and platform settings.
-
+- **MentorConnect**: stands out with a smart recommendation system, push notifications, and a gamified experience where students earn XP points,   complete mentorship quests, climb the leaderboard, and redeem credits for exclusive rewards.
 ## Tech Stack
 
 - **Frontend**: React with TypeScript
@@ -64,6 +65,8 @@ MentorConnect is a fully functional web-based platform that connects students wi
 ├── 📄 postcss.config.js
 ├── 📄 tailwind.config.js
 ├── 📄 tsconfig.json
+
+
 
 
 📂 server
@@ -118,6 +121,13 @@ MentorConnect is a fully functional web-based platform that connects students wi
 ![](./demo/SC09.png)
 [IMG10](./demo/SC10.png)
 ![](./demo/SC10.png)
+[IMG11](./demo/SC11.jpg)
+![](./demo/SC11.jpg)
+[IMG12](./demo/SC12.jpg)
+![](./demo/SC12.jpg)
+[IMG13](./demo/SC13.jpg)
+![](./demo/SC13.jpg)
+
 
 
 
@@ -162,6 +172,8 @@ MentorConnect is a fully functional web-based platform that connects students wi
    npm run start
    ```
 
+
+
 ## Contributors
 
 - Ashutosh Kumar [<img src="https://img.shields.io/badge/LinkedIn-0077B5?style=flat&logo=linkedin&logoColor=white" />](https://www.linkedin.com/in/ashukr321/) [<img src="https://img.shields.io/badge/Portfolio-000000?style=flat&logo=About.me&logoColor=white" />](https://www.devashu.tech/) [<img src="https://img.shields.io/badge/GitHub-100000?style=flat&logo=github&logoColor=white" />](https://github.com/ashukr321)
@@ -181,5 +193,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 
 
-For further queries, contact us at [Email Me](mailto:angelsingh2199@gmail.com).
+For further queries, contact us at [Email Me](mailto:coderashukr321@gmail.com), [Email Me](mailto:angelsingh2199@gmail.com).
 
