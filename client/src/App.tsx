@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import useAuthStore from './store/authStore';
@@ -23,6 +23,8 @@ import Chatbot from './pages/chatbot/chatbot';
 import ContactUs from './pages/ContactUs/ContactUs';
 import ContactPublic from './pages/ContactPublic';
 
+// import google tags manager 
+import useGTM from './hooks/useGTM';
 // Protected route component
 const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
   const { isAuthenticated } = useAuthStore();
@@ -35,6 +37,9 @@ const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
 };
 
 function App() {
+  // initialize the gtm and pass gtm *google tag manager id 
+  useGTM('GTM-KTQHK59S')
+ 
   return (
     <>
       <Toaster position="top-right" />

@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { MdCancel } from "react-icons/md";
 import { FaLinkedin } from "react-icons/fa";
 import { IoMdMenu } from "react-icons/io";
-import { Link } from 'react-router-dom';
+import { Link,useLocation } from 'react-router-dom';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import useAuthStore from '../store/authStore';
 //  features 
@@ -11,8 +11,17 @@ import useAuthStore from '../store/authStore';
 import { useState, useEffect } from 'react';
 import { IoSearchOutline } from 'react-icons/io5';
 
+import ReactGA from 'react-ga4';
+
+
 
 const HomePage: React.FC = () => {
+  const location = useLocation();
+
+  useEffect(()=>{
+    ReactGA.send('pageview');
+  },[location])
+  
   const { isAuthenticated } = useAuthStore();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
