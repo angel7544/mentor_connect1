@@ -121,6 +121,13 @@ MentorConnect is a fully functional web-based platform that connects students wi
 ![](./demo/SC09.png)
 [IMG10](./demo/SC10.png)
 ![](./demo/SC10.png)
+[IMG11](./demo/SC11.jpg)
+![](./demo/SC11.jpg)
+[IMG12](./demo/SC12.jpg)
+![](./demo/SC12.jpg)
+[IMG13](./demo/SC13.jpg)
+![](./demo/SC13.jpg)
+
 
 
 
@@ -186,5 +193,5 @@ This project is licensed under the MIT License - see the LICENSE file for detail
 
 
 
-For further queries, contact us at [Email Me](mailto:angelsingh2199@gmail.com).
+For further queries, contact us at [Email Me](mailto:coderashukr321@gmail.com), [Email Me](mailto:angelsingh2199@gmail.com).
 
