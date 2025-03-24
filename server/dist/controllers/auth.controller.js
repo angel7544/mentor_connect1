@@ -10,10 +10,15 @@ var __rest = (this && this.__rest) || function (s, e) {
         }
     return t;
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getCurrentUser = exports.refreshToken = exports.login = exports.signup = void 0;
 const user_model_1 = require("../models/user.model");
 const auth_utils_1 = require("../utils/auth.utils");
+const mailoptions_1 = require("../utils/mailoptions");
+const mailtransport_1 = __importDefault(require("../utils/mailtransport"));
 /**
  * User signup controller - handles registration for students and alumni
  */
@@ -97,7 +102,7 @@ const signup = async (req, res) => {
         // Generate JWT tokens
         const token = (0, auth_utils_1.generateToken)(newUser._id);
         const refreshToken = (0, auth_utils_1.generateRefreshToken)(newUser._id);
-        // await transporter.sendMail(welcomeMailOptions(email, firstName));
+        await mailtransport_1.default.sendMail((0, mailoptions_1.welcomeMailOptions)(email, firstName));
         return res.status(201).json({
             success: true,
             message: 'User registered successfully',

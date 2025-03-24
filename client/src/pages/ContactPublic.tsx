@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 // Remove react-toastify import since you're using react-hot-toast
 // import 'react-toastify/dist/ReactToastify.css';
 
@@ -51,6 +52,19 @@ const ContactPublic = () => {
 
   return (
     <div className="bg-gradient-to-b from-white to-gray-100 min-h-screen pt-20 pb-16">
+      {/* Navigation Bubble */}
+      <Link to="/" className="fixed bottom-8 right-8 z-50">
+        <motion.div
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.95 }}
+          className="bg-primary-600 text-white p-4 rounded-full shadow-lg hover:shadow-xl transition-shadow duration-300"
+        >
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+          </svg>
+        </motion.div>
+      </Link>
+
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
@@ -229,12 +243,12 @@ const ContactPublic = () => {
             className="flex flex-col space-y-8"
           >
             <motion.div 
-              className="relative rounded-2xl overflow-hidden shadow-xl h-80 lg:h-96"
+              className="relative rounded-2xl overflow-hidden shadow-xl h-80 lg:h-86"
               whileHover={{ scale: 1.02 }}
               transition={{ duration: 0.3 }}
             >
               <img 
-                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80" 
+                src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1200&q=80" 
                 alt="Students collaborating" 
                 className="w-full h-full object-cover"
               />
@@ -246,7 +260,7 @@ const ContactPublic = () => {
               </div>
             </motion.div>
             
-            <div className="bg-white rounded-2xl shadow-lg p-6 space-y-6 border border-gray-100">
+            <div className="bg-white rounded-2xl shadow-lg p-4 space-y-4 border border-gray-100">
               <div>
                 <h3 className="text-lg font-semibold text-gray-900 flex items-center">
                   <svg className="w-5 h-5 mr-2 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
