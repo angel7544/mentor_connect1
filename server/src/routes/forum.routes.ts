@@ -32,9 +32,13 @@ router.get('/categories/:categoryId/topics', getTopicsByCategory);
 router.get('/topics/recent', getRecentTopics);
 router.get('/topics/search', searchTopics);
 
+
 // Reply routes
 router.post('/replies', authenticateToken, createReply);
 router.put('/replies/:id', authenticateToken, updateReply);
 router.post('/replies/:id/accept', authenticateToken, markReplyAsAccepted);
+
+
+
 
 export default router; 

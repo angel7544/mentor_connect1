@@ -21,6 +21,8 @@ import resourceRoutes from './routes/resource.routes';
 import eventRoutes from './routes/event.routes';
 import forumRoutes from './routes/forum.routes';
 
+
+
 // Load environment variables
 dotenv.config();
 
@@ -81,6 +83,11 @@ app.use('/api/forum', forumRoutes);
 app.get('/', (req: Request, res: Response) => {
   res.json({ message: 'Welcome to MentorConnect API' });
 });
+
+
+
+
+
 
 // Apply the 404 handler for undefined routes
 app.use(notFoundHandler);
