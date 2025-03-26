@@ -41,14 +41,18 @@ const DashboardPage: React.FC = () => {
         
         <RoleBasedRender
           alumniView={
-            <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors mt-4 md:mt-0">
-              Schedule Mentorship Session
-            </button>
+            <Link to="/schedule">
+              <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors mt-4 md:mt-0">
+                Schedule Mentorship Session
+              </button>
+            </Link>
           }
           studentView={
-            <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors mt-4 md:mt-0">
-              Connect with Alumni
-            </button>
+            <Link to="/mentorship">
+              <button className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors mt-4 md:mt-0">
+                Connect with Alumni
+              </button>
+            </Link>
           }
           fallback={null}
         />
