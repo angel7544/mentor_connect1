@@ -3,7 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import { connectDB, disconnectDB } from './config/database';
 import helmet from 'helmet';
-
+import responseTime from 'response-time';
 // matric collections 
 import client from 'prom-client'
 
@@ -29,14 +29,30 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 5000;
 
-//  create functuion to collect Defualt Matrics 
-
+//  create function to collect Default Metrics 
 const collectDefaultMetrics = client.collectDefaultMetrics;
 collectDefaultMetrics({ register: client.register });
 
+// create the custom dashboard 
+const reqResTime  = new client.Histogram({
+  name: 'http_req_res_time_mentor_connect',
+  help: 'Request response time in seconds',
+  labelNames: ['method', 'route', 'status_code'],
+  buckets: [1, 50, 100, 200, 500, 1000,2000],
+});
 
 
 
+
+
+app.use(responseTime((req: Request, res: Response, time: number) => {
+  reqResTime.labels({
+    method: req.method,
+    route: req.url,
+    status_code: res.statusCode,
+  })
+  .observe(time);
+}));
 
 // Configure CORS with specific options
 app.use(cors({

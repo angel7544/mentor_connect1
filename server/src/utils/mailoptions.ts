@@ -124,9 +124,10 @@ const supportContactOpition = (firstName: string, email: string, subject: string
   };
   const formattedDate = now.toLocaleString('en-US', options);
 
+  email
   return {
-    from: `"${process.env.company_name || 'MentorConnectAI'}" <${process.env.smtp_email}>`,
-    to: email,
+    from: email,
+    to:`"${process.env.company_name || 'MentorConnectAI'}" <${process.env.smtp_email}>`, 
     subject: `📬 Support Request: ${subject}`,
     html: `
     <div style="font-family: Arial, sans-serif; padding: 20px; background-color: #f9f9f9;">
