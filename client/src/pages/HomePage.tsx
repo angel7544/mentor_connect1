@@ -335,97 +335,190 @@ const HomePage: React.FC = () => {
 };
 
 const About: React.FC = () => {
+  const [currentTestimonial, setCurrentTestimonial] = useState(0);
+
+  const testimonials = [
+    {
+      quote: "MentorConnect transformed my career path. The guidance I received from my mentor helped me land my dream job at a top tech company.",
+      author: "Sarah Chen",
+      role: "Software Engineer at Google",
+      image: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      rating: 5
+    },
+    {
+      quote: "The personalized mentorship I received was invaluable. My mentor helped me navigate complex career decisions and provided insights that shaped my professional journey.",
+      author: "Michael Rodriguez",
+      role: "Product Manager at Microsoft",
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      rating: 5
+    },
+    {
+      quote: "Through MentorConnect, I found not just a mentor but a lifelong professional relationship. The platform's matching system is truly remarkable.",
+      author: "Priya Patel",
+      role: "Data Scientist at Amazon",
+      image: "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      rating: 5
+    }
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentTestimonial((prev) => (prev + 1) % testimonials.length);
+    }, 5000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className="bg-white py-24 sm:py-32" id='about'>
-      <div className="mx-auto max-w-7xl px-6 lg:px-8">
+    <div className="bg-white py-12 sm:py-16" id='about'>
+      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         {/* Header Section */}
-        <div className="mx-auto max-w-2xl text-center">
-          <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+        <div className="mx-auto max-w-2xl text-center mb-8">
+          <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-gray-900">
             Bridging the Gap Between Students and Alumni
           </h2>
-          <p className="mt-6 text-lg leading-8 text-gray-600">
+          <p className="mt-4 text-base sm:text-lg leading-7 text-gray-600">
             MentorConnect is revolutionizing the way students connect with experienced alumni, 
             creating meaningful relationships that shape future careers.
           </p>
         </div>
 
         {/* Stats Section */}
-        <div className="mx-auto mt-16 max-w-7xl px-6 lg:px-8">
-          <dl className="grid grid-cols-1 gap-x-8 gap-y-16 text-center lg:grid-cols-3">
-            <div className="mx-auto flex max-w-xs flex-col gap-y-4">
-              <dt className="text-base leading-7 text-gray-600">Years of Excellence</dt>
-              <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900">5+</dd>
+        <div className="mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <dl className="grid grid-cols-1 gap-x-4 gap-y-6 text-center sm:grid-cols-3">
+            <div className="mx-auto flex max-w-xs flex-col gap-y-2">
+              <dt className="text-sm leading-6 text-gray-600">Years of Excellence</dt>
+              <dd className="order-first text-2xl font-semibold tracking-tight text-gray-900">5+</dd>
             </div>
-            <div className="mx-auto flex max-w-xs flex-col gap-y-4">
-              <dt className="text-base leading-7 text-gray-600">Successful Mentorships</dt>
-              <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900">1000+</dd>
+            <div className="mx-auto flex max-w-xs flex-col gap-y-2">
+              <dt className="text-sm leading-6 text-gray-600">Successful Mentorships</dt>
+              <dd className="order-first text-2xl font-semibold tracking-tight text-gray-900">1000+</dd>
             </div>
-            <div className="mx-auto flex max-w-xs flex-col gap-y-4">
-              <dt className="text-base leading-7 text-gray-600">Global Network</dt>
-              <dd className="order-first text-3xl font-semibold tracking-tight text-gray-900">50+ Countries</dd>
+            <div className="mx-auto flex max-w-xs flex-col gap-y-2">
+              <dt className="text-sm leading-6 text-gray-600">Global Network</dt>
+              <dd className="order-first text-2xl font-semibold tracking-tight text-gray-900">50+ Countries</dd>
             </div>
           </dl>
         </div>
 
         {/* Features Grid */}
-        <div className="mx-auto mt-16 max-w-7xl px-6 lg:px-8">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
-            <div className="rounded-xl bg-gray-50 p-8 shadow-sm hover:shadow-md transition-shadow">
+        <div className="mx-auto mt-8 max-w-7xl px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="rounded-xl bg-gray-50 p-6 shadow-sm hover:shadow-md transition-shadow">
               <img
                 src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
                 alt="Personalized Mentorship"
-                className="h-48 w-full object-cover rounded-lg mb-6"
+                className="h-40 w-full object-cover rounded-lg mb-4"
               />
-              <h3 className="text-xl font-semibold text-gray-900">Personalized Mentorship</h3>
-              <p className="mt-4 text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900">Personalized Mentorship</h3>
+              <p className="mt-2 text-sm text-gray-600">
                 Get one-on-one guidance from industry experts who understand your journey.
               </p>
             </div>
-            <div className="rounded-xl bg-gray-50 p-8 shadow-sm hover:shadow-md transition-shadow">
+            <div className="rounded-xl bg-gray-50 p-6 shadow-sm hover:shadow-md transition-shadow">
               <img
                 src="https://images.unsplash.com/photo-1515169067868-5387ec356754?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
                 alt="Networking Opportunities"
-                className="h-48 w-full object-cover rounded-lg mb-6"
+                className="h-40 w-full object-cover rounded-lg mb-4"
               />
-              <h3 className="text-xl font-semibold text-gray-900">Networking Opportunities</h3>
-              <p className="mt-4 text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900">Networking Opportunities</h3>
+              <p className="mt-2 text-sm text-gray-600">
                 Build valuable connections within your industry through our alumni network.
               </p>
             </div>
-            <div className="rounded-xl bg-gray-50 p-8 shadow-sm hover:shadow-md transition-shadow">
+            <div className="rounded-xl bg-gray-50 p-6 shadow-sm hover:shadow-md transition-shadow">
               <img
                 src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80"
                 alt="Career Growth"
-                className="h-48 w-full object-cover rounded-lg mb-6"
+                className="h-40 w-full object-cover rounded-lg mb-4"
               />
-              <h3 className="text-xl font-semibold text-gray-900">Career Growth</h3>
-              <p className="mt-4 text-gray-600">
+              <h3 className="text-lg font-semibold text-gray-900">Career Growth</h3>
+              <p className="mt-2 text-sm text-gray-600">
                 Accelerate your professional development with expert guidance and resources.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Testimonial Section */}
-        <div className="relative isolate overflow-hidden bg-gray-900 py-16 sm:py-24 mt-16 rounded-2xl">
-          <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <figure className="mx-auto max-w-2xl">
-              <blockquote className="text-center text-xl font-semibold leading-8 text-white sm:text-2xl sm:leading-9">
-                <p>
-                  "MentorConnect transformed my career path. The guidance I received from my mentor
-                  helped me land my dream job at a top tech company."
-                </p>
-              </blockquote>
-              <figcaption className="mt-8 text-center">
-                <div className="mt-4 flex items-center justify-center space-x-3 text-base">
-                  <div className="font-semibold text-white">Sarah Chen</div>
-                  <svg viewBox="0 0 2 2" width="3" height="3" aria-hidden="true" className="fill-white">
-                    <circle cx="1" cy="1" r="1" />
-                  </svg>
-                  <div className="text-gray-300">Software Engineer at Google</div>
-                </div>
-              </figcaption>
-            </figure>
+        {/* Updated Testimonial Section */}
+        <div className="relative isolate overflow-hidden bg-gradient-to-br from-gray-900 via-gray-800 to-primary-900 py-12 sm:py-16 mt-8 rounded-2xl">
+          <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80')] bg-cover bg-center opacity-10"></div>
+          <div className="absolute inset-0 bg-gradient-to-t from-gray-900/80 to-gray-900/20"></div>
+          <div className="relative mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-8">
+              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-white">
+                Success Stories
+              </h2>
+              <p className="mt-2 text-sm sm:text-base text-gray-300">
+                Hear from our community members about their journey with MentorConnect
+              </p>
+            </div>
+
+            <div className="relative">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={currentTestimonial}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -20 }}
+                  transition={{ duration: 0.5 }}
+                  className="flex flex-col items-center"
+                >
+                  <div className="relative mb-6">
+                    <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-indigo-500 rounded-full blur-xl opacity-50"></div>
+                    <img
+                      src={testimonials[currentTestimonial].image}
+                      alt={testimonials[currentTestimonial].author}
+                      className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-4 border-white shadow-xl"
+                    />
+                  </div>
+                  
+                  <div className="flex mb-3">
+                    {[...Array(testimonials[currentTestimonial].rating)].map((_, i) => (
+                      <svg
+                        key={i}
+                        className="w-4 h-4 sm:w-5 sm:h-5 text-yellow-400"
+                        fill="currentColor"
+                        viewBox="0 0 20 20"
+                      >
+                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
+                      </svg>
+                    ))}
+                  </div>
+
+                  <blockquote className="text-center text-base sm:text-lg font-semibold leading-7 text-white max-w-2xl mx-auto px-4">
+                    <p className="relative">
+                      <span className="absolute -left-2 -top-2 text-2xl sm:text-3xl text-primary-400">"</span>
+                      {testimonials[currentTestimonial].quote}
+                      <span className="absolute -right-2 -bottom-2 text-2xl sm:text-3xl text-primary-400">"</span>
+                    </p>
+                  </blockquote>
+
+                  <div className="mt-6 text-center">
+                    <div className="font-semibold text-white text-base sm:text-lg">
+                      {testimonials[currentTestimonial].author}
+                    </div>
+                    <div className="text-sm sm:text-base text-gray-300">
+                      {testimonials[currentTestimonial].role}
+                    </div>
+                  </div>
+                </motion.div>
+              </AnimatePresence>
+
+              {/* Testimonial Navigation Dots */}
+              <div className="flex justify-center mt-6 space-x-2">
+                {testimonials.map((_, index) => (
+                  <button
+                    key={index}
+                    className={`h-1.5 w-1.5 sm:h-2 sm:w-2 rounded-full transition-all duration-300 ${
+                      currentTestimonial === index ? 'bg-white w-3 sm:w-4' : 'bg-white/50'
+                    }`}
+                    onClick={() => setCurrentTestimonial(index)}
+                    aria-label={`Go to testimonial ${index + 1}`}
+                  />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </div>
