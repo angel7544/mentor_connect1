@@ -18,11 +18,40 @@ import axios from 'axios';
 
 const HomePage: React.FC = () => {
   const location = useLocation();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
-  useEffect(()=>{
+  const heroImages = [
+    {
+      url: "https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80",
+      title: "Connect with Mentors",
+      description: "Find experienced alumni mentors who can guide your career path"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      title: "Personalized Learning",
+      description: "Get tailored guidance based on your career goals"
+    },
+    {
+      url: "https://images.unsplash.com/photo-1515169067868-5387ec356754?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      title: "Networking Opportunities",
+      description: "Build valuable connections in your industry"
+    }
+  ];
+
+  useEffect(() => {
     ReactGA.send('pageview');
-  },[location])
-  
+  }, [location]);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentImageIndex((prevIndex) => 
+        prevIndex === heroImages.length - 1 ? 0 : prevIndex + 1
+      );
+    }, 6000);
+
+    return () => clearInterval(timer);
+  }, []);
+
   const { isAuthenticated } = useAuthStore();
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(false);
 
@@ -234,7 +263,7 @@ const HomePage: React.FC = () => {
               </div>
             </div>
             
-            {/* Updated hero image section */}
+            {/* Updated hero image section with carousel */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
@@ -246,11 +275,48 @@ const HomePage: React.FC = () => {
                   <div className="absolute inset-0 flex items-center justify-center">
                     <div className="w-64 h-64 bg-primary-600/20 rounded-full filter blur-3xl"></div>
                   </div>
-                  <img
-                    className="relative rounded-2xl shadow-2xl"
-                    src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80"
-                    alt="Students collaborating"
-                  />
+                  <div className="relative rounded-2xl shadow-2xl overflow-hidden">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={currentImageIndex}
+                        initial={{ opacity: 0, scale: 1.1 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        transition={{ duration: 0.5 }}
+                        className="relative aspect-[4/3]"
+                      >
+                        <img
+                          src={heroImages[currentImageIndex].url}
+                          alt={heroImages[currentImageIndex].title}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/30 to-transparent">
+                          <div className="absolute bottom-0 left-0 right-0 p-6">
+                            <h3 className="text-xl font-semibold text-white mb-2">
+                              {heroImages[currentImageIndex].title}
+                            </h3>
+                            <p className="text-sm text-gray-200">
+                              {heroImages[currentImageIndex].description}
+                            </p>
+                          </div>
+                        </div>
+                      </motion.div>
+                    </AnimatePresence>
+                  </div>
+                  
+                  {/* Carousel Navigation Dots */}
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2">
+                    {heroImages.map((_, index) => (
+                      <button
+                        key={index}
+                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                          currentImageIndex === index ? 'bg-white w-4' : 'bg-white/50'
+                        }`}
+                        onClick={() => setCurrentImageIndex(index)}
+                        aria-label={`Go to slide ${index + 1}`}
+                      />
+                    ))}
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -261,7 +327,7 @@ const HomePage: React.FC = () => {
       <About/>
       <Features/>
       <Fnq/>
-      <Team/>
+      {/* <Team/> */}
       <Footer/>
       {/* Features section */}
     </div>
@@ -694,7 +760,7 @@ const Team: React.FC = () => {
                   rel="noopener noreferrer"
                   className="mt-4 inline-block text-white hover:text-primary-400 transition-colors duration-200"
                 >
-                  {FaLinkedin({ size: 24 })}
+                  {/* <FaLinkedin size={24} /> */}
                 </a>
               </div>
             </motion.div>
