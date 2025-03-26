@@ -10,6 +10,25 @@ interface ChatMessage {
   timestamp: Date;
 }
 
+
+const formatBotResponse = (text: string): string => {
+  return text
+    // Convert main titles (**### Title**) to proper bold H3
+    .replace(/\*\*###\s+(.*?)\*\*/g, '### **$1**')
+
+    // Convert extra-spaced headers (like **### ## Title**) to proper H3
+    .replace(/\*\*###\s+##\s+(.*?)\*\*/g, '### **$1**')
+
+    // Ensure proper paragraph spacing (convert single newline to double)
+    .replace(/([^\n])\n([^\n])/g, '$1\n\n$2')
+
+    // Remove excessive newlines (keep max two)
+    .replace(/\n{3,}/g, '\n\n')
+
+    .trim();
+};
+
+
 const Chatbot = () => {
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
@@ -46,7 +65,7 @@ const Chatbot = () => {
       
       const botMessage: ChatMessage = {
         type: 'bot',
-        content: data.response || 'No response',
+        content: formatBotResponse(data.response) || 'No response',
         timestamp: new Date()
       };
       
@@ -120,7 +139,7 @@ const Chatbot = () => {
                   }`}
                 >
                   <div className="flex justify-between items-start gap-2">
-                    <p className={`text-sm ${chat.type === 'user' ? 'text-white' : 'text-gray-800'}`}>
+                    <p className={`text-sm whitespace-pre-wrap ${chat.type === 'user' ? 'text-white' : 'text-gray-800'}`}>
                       {chat.content}
                     </p>
                     {chat.type === 'bot' && (
