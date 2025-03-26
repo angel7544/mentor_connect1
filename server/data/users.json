@@ -1,0 +1,22 @@
+[
+  {
+    "id": "1741622449503",
+    "email": "shivam18012003@gmail.com",
+    "password": "$2a$10$cSM7qIUSzPhh41wqPaigoOwtWU6/409QVytCPhMQh3Yp8./EAgOce",
+    "firstName": "shivam",
+    "lastName": "kumar sinha",
+    "role": "STUDENT",
+    "createdAt": "2025-03-10T16:00:49.503Z",
+    "updatedAt": "2025-03-10T16:00:49.503Z"
+  },
+  {
+    "id": "1741662471816",
+    "email": "snhsngh108@gmail.com",
+    "password": "$2a$10$A2yUQ7sjhtNxLOcu9kRXx.FA3fAfDZbr/4D.aGvign7CGpFURt2xe",
+    "firstName": "sneha",
+    "lastName": "kumari",
+    "role": "ALUMNI",
+    "createdAt": "2025-03-11T03:07:51.816Z",
+    "updatedAt": "2025-03-11T03:07:51.816Z"
+  }
+]
