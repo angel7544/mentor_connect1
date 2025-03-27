@@ -8,7 +8,11 @@ export const dummyEvents: Event[] = [
     type: 'workshop',
     startDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days from now
     endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000 + 2 * 60 * 60 * 1000).toISOString(),
-    location: 'Bangalore Tech Hub',
+    location: 'Bangalore Tech Hub, Koramangala',
+    locationCoordinates: {
+      lat: 12.9352,
+      lng: 77.6245
+    },
     isOnline: false,
     meetingLink: '',
     organizer: {
@@ -31,7 +35,11 @@ export const dummyEvents: Event[] = [
     type: 'networking',
     startDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(), // 14 days from now
     endDate: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000 + 3 * 60 * 60 * 1000).toISOString(),
-    location: 'Hyderabad Tech Park',
+    location: 'Hyderabad Tech Park, HITEC City',
+    locationCoordinates: {
+      lat: 17.4474,
+      lng: 78.3762
+    },
     isOnline: false,
     meetingLink: '',
     organizer: {
@@ -77,7 +85,11 @@ export const dummyEvents: Event[] = [
     type: 'workshop',
     startDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
     endDate: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000 + 6 * 60 * 60 * 1000).toISOString(),
-    location: 'Mumbai Tech Center',
+    location: 'Mumbai Tech Center, Andheri East',
+    locationCoordinates: {
+      lat: 19.1136,
+      lng: 72.8697
+    },
     isOnline: false,
     meetingLink: '',
     organizer: {
@@ -123,7 +135,11 @@ export const dummyEvents: Event[] = [
     type: 'other',
     startDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(), // 1 day ago
     endDate: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000 + 5 * 60 * 60 * 1000).toISOString(),
-    location: 'Delhi Innovation Hub',
+    location: 'Delhi Innovation Hub, Connaught Place',
+    locationCoordinates: {
+      lat: 28.6328,
+      lng: 77.2197
+    },
     isOnline: false,
     meetingLink: '',
     organizer: {

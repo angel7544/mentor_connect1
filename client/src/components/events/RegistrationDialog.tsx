@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Event } from '../../services/eventService';
 import { toast } from 'react-hot-toast';
 
@@ -6,21 +6,20 @@ interface RegistrationDialogProps {
   isOpen: boolean;
   onClose: () => void;
   event: Event;
-  onRegister: (eventId: string) => Promise<void>;
+  onRegister: () => Promise<void>;
+  isSubmitting: boolean;
 }
 
 const RegistrationDialog: React.FC<RegistrationDialogProps> = ({
   isOpen,
   onClose,
   event,
-  onRegister
+  onRegister,
+  isSubmitting
 }) => {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-
   const handleRegister = async () => {
     try {
-      setIsSubmitting(true);
-      await onRegister(event._id);
+      await onRegister();
       toast.success(
         <div className="text-center">
           <p className="font-semibold">Thank you for showing interest in the event!</p>
@@ -40,8 +39,6 @@ const RegistrationDialog: React.FC<RegistrationDialogProps> = ({
       onClose();
     } catch (error) {
       toast.error('Failed to register for the event. Please try again.');
-    } finally {
-      setIsSubmitting(false);
     }
   };
 

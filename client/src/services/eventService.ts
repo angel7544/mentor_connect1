@@ -9,6 +9,10 @@ export interface Event {
   startDate: string;
   endDate: string;
   location: string;
+  locationCoordinates?: {
+    lat: number;
+    lng: number;
+  };
   isOnline: boolean;
   meetingLink?: string;
   organizer: {
@@ -17,7 +21,7 @@ export interface Event {
     lastName: string;
   };
   attendees: string[];
-  capacity?: number;
+  capacity: number;
   status: EventStatus;
   isPublic: boolean;
   registrationDeadline?: string;
