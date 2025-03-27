@@ -470,7 +470,7 @@ const StudentMentorshipView: React.FC<MentorshipViewProps> = ({ activeTab, searc
     <div>
       {activeTab === 'active' ? (
         <div>
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">My Mentors</h2>
+          {/* <h2 className="text-xl font-semibold text-gray-800 mb-4">My Mentors</h2> */}
           <div className="space-y-4">
             {activeMentorships.length > 0 ? (
               activeMentorships.map(session => (
@@ -524,7 +524,8 @@ const StudentMentorshipView: React.FC<MentorshipViewProps> = ({ activeTab, searc
 const MentorshipSessionCard: React.FC<{ 
   session: MentorshipSession; 
   isAlumniView: boolean;
-}> = ({ session, isAlumniView }) => {
+}> = ({ session: initialSession, isAlumniView }) => {
+  const [session, setSession] = useState<MentorshipSession>(initialSession);
   const [showContactDialog, setShowContactDialog] = useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = useState(false);
   const [showRescheduleDialog, setShowRescheduleDialog] = useState(false);
@@ -532,6 +533,12 @@ const MentorshipSessionCard: React.FC<{
   const [message, setMessage] = useState('');
   const [newDate, setNewDate] = useState('');
   const [newTime, setNewTime] = useState('');
+  const [rescheduleReason, setRescheduleReason] = useState('');
+
+  // Update local session state when prop changes
+  useEffect(() => {
+    setSession(initialSession);
+  }, [initialSession]);
 
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
@@ -556,12 +563,38 @@ const MentorshipSessionCard: React.FC<{
   };
 
   const handleReschedule = () => {
+    // Validate date and time
+    const selectedDateTime = new Date(newDate + 'T' + newTime);
+    const currentDateTime = new Date();
+
+    if (selectedDateTime <= currentDateTime) {
+      alert('Please select a future date and time for the meeting.');
+      return;
+    }
+
+    if (!rescheduleReason.trim()) {
+      alert('Please provide a reason for rescheduling.');
+      return;
+    }
+
+    // Update the session's next meeting data
+    setSession(prevSession => ({
+      ...prevSession,
+      nextMeeting: prevSession.nextMeeting ? {
+        ...prevSession.nextMeeting,
+        date: selectedDateTime
+      } : undefined
+    }));
+
     // Here you would typically send the reschedule request to your backend
     console.log('Rescheduling to:', newDate, newTime);
+    console.log('Reason:', rescheduleReason);
+    
     setShowRescheduleDialog(false);
     setShowRescheduleSuccessDialog(true);
     setNewDate('');
     setNewTime('');
+    setRescheduleReason('');
   };
 
   return (
@@ -592,23 +625,41 @@ const MentorshipSessionCard: React.FC<{
         </div>
 
         {session.status === 'active' && session.nextMeeting && (
-          <div className="mb-4 bg-indigo-50 p-3 rounded-md">
-            <h4 className="text-sm font-medium text-indigo-800 mb-1">Next Meeting</h4>
-            <p className="text-sm text-indigo-700">{formatMeetingTime(session.nextMeeting.date)}</p>
-            <p className="text-sm text-indigo-600">{session.nextMeeting.topic}</p>
-            <div className="mt-2 flex space-x-2">
+          <div className="mb-4 bg-blue-50 p-4 rounded-lg">
+            <h4 className="text-lg font-semibold text-gray-900 mb-2">Next Meeting</h4>
+            <div className="space-y-2">
+              <div className="flex items-center text-blue-600">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+                <span className="text-base">{formatMeetingTime(session.nextMeeting.date)}</span>
+              </div>
+              <div className="flex items-center text-blue-600">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+                <span className="text-base">{session.nextMeeting.topic}</span>
+              </div>
+            </div>
+            <div className="mt-4 flex space-x-3">
               <a
                 href={session.nextMeeting.link}
-                className="text-xs bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition-colors"
+                className="flex items-center justify-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded-md hover:bg-blue-700 transition-colors"
                 target="_blank"
                 rel="noopener noreferrer"
               >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"></path>
+                </svg>
                 Join Meeting
               </a>
               <button 
-                className="text-xs bg-white text-indigo-600 border border-indigo-600 px-3 py-1 rounded-md hover:bg-indigo-50 transition-colors"
+                className="flex items-center justify-center px-4 py-2 border border-blue-600 text-blue-600 text-sm font-medium rounded-md hover:bg-blue-50 transition-colors"
                 onClick={() => setShowRescheduleDialog(true)}
               >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
                 Reschedule
               </button>
             </div>
@@ -830,22 +881,40 @@ const MentorshipSessionCard: React.FC<{
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   value={newTime}
                   onChange={(e) => setNewTime(e.target.value)}
+                  min={newDate === new Date().toISOString().split('T')[0] ? new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' }) : '00:00'}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="rescheduleReason" className="block text-sm font-medium text-gray-700 mb-1">
+                  Reason for Rescheduling
+                </label>
+                <textarea
+                  id="rescheduleReason"
+                  rows={3}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  placeholder="Please provide a reason for rescheduling..."
+                  value={rescheduleReason}
+                  onChange={(e) => setRescheduleReason(e.target.value)}
                 />
               </div>
             </div>
 
             <div className="flex justify-end space-x-3 mt-6">
               <button
-                onClick={() => setShowRescheduleDialog(false)}
+                onClick={() => {
+                  setShowRescheduleDialog(false);
+                  setRescheduleReason('');
+                }}
                 className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
               >
                 Cancel
               </button>
               <button
                 onClick={handleReschedule}
-                disabled={!newDate || !newTime}
+                disabled={!newDate || !newTime || !rescheduleReason.trim()}
                 className={`px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
-                  newDate && newTime
+                  newDate && newTime && rescheduleReason.trim()
                     ? 'bg-indigo-600 hover:bg-indigo-700'
                     : 'bg-indigo-400 cursor-not-allowed'
                 }`}
@@ -884,7 +953,7 @@ const MentorshipSessionCard: React.FC<{
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
                     </svg>
                   </span>
-                  The other participant will be notified of the new meeting time
+                  The other participant will be notified of the new meeting time and reason
                 </li>
                 <li className="flex items-start">
                   <span className="inline-block w-4 h-4 mr-2 mt-0.5">
