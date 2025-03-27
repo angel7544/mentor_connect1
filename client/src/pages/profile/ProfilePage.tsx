@@ -2,6 +2,134 @@ import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import RoleBasedRender from '../../components/common/RoleBasedRender';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import axios from 'axios';
+
+interface ProfileData {
+  profile: {
+    avatarUrl?: string;
+    bio?: string;
+    headline?: string;
+    skills?: string[];
+    interests?: string[];
+    education?: Array<{
+      institution: string;
+      degree: string;
+      fieldOfStudy: string;
+      startYear: number;
+      endYear?: number;
+    }>;
+    experience?: Array<{
+      title: string;
+      company: string;
+      startDate: Date;
+      endDate?: Date;
+      description?: string;
+    }>;
+    socialLinks?: Array<{
+      platform: string;
+      url: string;
+    }>;
+    contactInfo?: {
+      email?: string;
+      phone?: string;
+      linkedIn?: string;
+    };
+    availability?: {
+      mentorshipAvailable: boolean;
+      availableHours?: Array<{
+        day: string;
+        startTime: string;
+        endTime: string;
+      }>;
+    };
+    preferences?: {
+      contactPreference?: 'email' | 'in-app' | 'both';
+      notificationSettings?: {
+        email: boolean;
+        app: boolean;
+      };
+      mentorshipTopics?: string[];
+    };
+  };
+  user: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: 'student' | 'alumni' | 'admin';
+  };
+}
+
+interface ApiResponse {
+  profile: ProfileData['profile'];
+  user: ProfileData['user'];
+}
+
+interface ImageUploadResponse {
+  message: string;
+  imageUrl: string;
+}
+
+const defaultProfileData: ProfileData = {
+  profile: {
+    avatarUrl: '',
+    bio: 'Welcome to your profile! Add your bio here.',
+    headline: 'Add a headline to describe yourself',
+    skills: ['JavaScript', 'React', 'Node.js'],
+    interests: ['Web Development', 'Mobile Development', 'Cloud Computing'],
+    education: [
+      {
+        institution: 'Your University',
+        degree: 'Bachelor of Science',
+        fieldOfStudy: 'Computer Science',
+        startYear: 2020,
+        endYear: 2024
+      }
+    ],
+    experience: [
+      {
+        title: 'Software Developer',
+        company: 'Tech Company',
+        startDate: new Date('2023-01-01'),
+        description: 'Add your experience description here'
+      }
+    ],
+    socialLinks: [
+      {
+        platform: 'LinkedIn',
+        url: 'https://linkedin.com/in/your-profile'
+      }
+    ],
+    contactInfo: {
+      email: '',
+      phone: '',
+      linkedIn: 'https://linkedin.com/in/your-profile'
+    },
+    availability: {
+      mentorshipAvailable: true,
+      availableHours: [
+        {
+          day: 'Monday',
+          startTime: '09:00',
+          endTime: '17:00'
+        }
+      ]
+    },
+    preferences: {
+      contactPreference: 'email',
+      notificationSettings: {
+        email: true,
+        app: true
+      },
+      mentorshipTopics: ['Career Development', 'Technical Skills']
+    }
+  },
+  user: {
+    firstName: '',
+    lastName: '',
+    email: '',
+    role: 'student'
+  }
+};
 
 /**
  * Main Profile page component with role-based views for students and alumni
@@ -11,33 +139,239 @@ const ProfilePage: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
+  const [profileData, setProfileData] = useState<ProfileData | null>(null);
+  const [error, setError] = useState<string | null>(null);
   
-  // Simulate loading user profile data
   useEffect(() => {
     const loadProfileData = async () => {
       try {
-        // Simulate API call to get profile data
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        console.log('Loading profile data...');
+        const response = await axios.get<ApiResponse>('/api/profile/me');
+        console.log('Profile data received:', response.data);
+        
+        // Check if we have valid data
+        if (!response.data) {
+          console.error('No data received from API');
+          throw new Error('No data received from API');
+        }
+
+        // If no profile exists, use default data with user info
+        if (!response.data.profile) {
+          console.log('No profile found, using default data');
+          const defaultData = {
+            ...defaultProfileData,
+            user: {
+              firstName: user?.firstName || '',
+              lastName: user?.lastName || '',
+              email: user?.email || '',
+              role: user?.role || 'student'
+            }
+          };
+          setProfileData(defaultData);
+        } else {
+          console.log('Setting profile data from API response');
+          // Ensure user data is present
+          const userData = response.data.user || {
+            firstName: user?.firstName || '',
+            lastName: user?.lastName || '',
+            email: user?.email || '',
+            role: user?.role || 'student'
+          };
+          setProfileData({
+            ...response.data,
+            user: userData
+          });
+        }
         setIsLoading(false);
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error loading profile:', error);
+        console.error('Error details:', {
+          status: error.response?.status,
+          data: error.response?.data,
+          message: error.message,
+          stack: error.stack
+        });
+        
+        // If profile not found, use default data
+        if (error.response?.status === 404) {
+          console.log('Profile not found, using default data');
+          const defaultData = {
+            ...defaultProfileData,
+            user: {
+              firstName: user?.firstName || '',
+              lastName: user?.lastName || '',
+              email: user?.email || '',
+              role: user?.role || 'student'
+            }
+          };
+          setProfileData(defaultData);
+        } else {
+          // For other errors, show the error message
+          const errorMessage = error.response?.data?.message || error.message || 'Failed to load profile data';
+          console.error('Setting error message:', errorMessage);
+          setError(errorMessage);
+        }
         setIsLoading(false);
       }
     };
     
-    loadProfileData();
-  }, []);
+    if (user) {
+      console.log('User found, loading profile data...');
+      loadProfileData();
+    } else {
+      console.log('No user found, not loading profile data');
+    }
+  }, [user]);
 
   const handleSaveChanges = async () => {
+    if (!profileData) return;
+    
     setIsSaving(true);
-    // Simulate API call to save profile changes
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsEditing(false);
-    setIsSaving(false);
+    setError(null); // Clear any previous errors
+    
+    try {
+      // Format the profile data to match the server's expected structure
+      const profileUpdateData = {
+        bio: profileData.profile.bio,
+        headline: profileData.profile.headline,
+        skills: profileData.profile.skills,
+        interests: profileData.profile.interests,
+        education: profileData.profile.education,
+        experience: profileData.profile.experience,
+        socialLinks: profileData.profile.socialLinks,
+        contactInfo: profileData.profile.contactInfo,
+        availability: profileData.profile.availability,
+        preferences: profileData.profile.preferences
+      };
+
+      console.log('Sending profile update:', profileUpdateData);
+      
+      try {
+        const response = await axios.put<{
+          message: string;
+          profile: ProfileData['profile'];
+          user?: ProfileData['user'];
+        }>('/api/profile/update', profileUpdateData);
+        
+        console.log('Profile update response:', response.data);
+        
+        // If we get a successful response with profile data, use it directly
+        if (response.data && response.data.profile) {
+          const updatedData = {
+            profile: response.data.profile,
+            user: response.data.user || profileData.user // Use existing user data if none provided
+          };
+          
+          console.log('Setting profile data from update response:', updatedData);
+          setProfileData(updatedData);
+          setIsEditing(false);
+          return;
+        }
+      } catch (updateError: any) {
+        console.error('Error in initial profile update:', updateError);
+        console.error('Update error details:', {
+          status: updateError.response?.status,
+          data: updateError.response?.data,
+          message: updateError.message
+        });
+        
+        // If the update failed with a server error, throw to the outer catch
+        if (updateError.response?.status >= 500) {
+          throw updateError;
+        }
+      }
+      
+      // If we get here, either the update didn't return profile data or there was a client error
+      // Try to reload the profile data as a fallback
+      console.log('Reloading profile data after update...');
+      try {
+        const updatedProfileResponse = await axios.get<ApiResponse>('/api/profile/me');
+        console.log('Reloaded profile data:', updatedProfileResponse.data);
+        
+        if (updatedProfileResponse.data) {
+          // Ensure user data is present
+          const userData = updatedProfileResponse.data.user || profileData.user;
+          
+          setProfileData({
+            profile: updatedProfileResponse.data.profile || profileData.profile,
+            user: userData
+          });
+          
+          setIsEditing(false);
+        } else {
+          throw new Error('Failed to reload profile after update');
+        }
+      } catch (reloadError: any) {
+        console.error('Error reloading profile:', reloadError);
+        throw new Error('Failed to save changes and reload profile');
+      }
+    } catch (error: any) {
+      console.error('Error in handleSaveChanges:', error);
+      console.error('Error details:', {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+      
+      // Show the error to the user
+      setError(error.response?.data?.message || error.message || 'Failed to save profile changes');
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (!event.target.files || !event.target.files[0]) return;
+
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append('image', file);
+
+    try {
+      const response = await axios.post<ImageUploadResponse>('/api/profile/upload-image', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      // Update profile data with new image URL
+      if (profileData) {
+        setProfileData({
+          ...profileData,
+          profile: {
+            ...profileData.profile,
+            avatarUrl: response.data.imageUrl,
+          },
+        });
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      setError('Failed to upload profile image');
+    }
   };
 
   if (isLoading) {
     return <LoadingSpinner size="large" text="Loading profile..." />;
+  }
+
+  if (error) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-red-50 border border-red-200 rounded-md p-4">
+          <p className="text-red-600">{error}</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profileData) {
+    return (
+      <div className="container mx-auto px-4 py-8">
+        <div className="bg-white rounded-lg shadow-md p-6 text-center">
+          <p className="text-gray-600">Please log in to view your profile.</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -56,8 +390,8 @@ const ProfilePage: React.FC = () => {
       </div>
 
       <RoleBasedRender
-        alumniView={<AlumniProfileView isEditing={isEditing} />}
-        studentView={<StudentProfileView isEditing={isEditing} />}
+        alumniView={<AlumniProfileView isEditing={isEditing} profileData={profileData} onImageUpload={handleImageUpload} />}
+        studentView={<StudentProfileView isEditing={isEditing} profileData={profileData} onImageUpload={handleImageUpload} />}
         fallback={
           <div className="bg-white rounded-lg shadow-md p-6 text-center">
             <p className="text-gray-600">Please log in to view your profile.</p>
@@ -71,18 +405,17 @@ const ProfilePage: React.FC = () => {
 /**
  * Alumni profile view component
  */
-const AlumniProfileView: React.FC<{ isEditing: boolean }> = ({ isEditing }) => {
-  // Form state (would be populated from API in a real implementation)
+const AlumniProfileView: React.FC<{ isEditing: boolean; profileData: ProfileData; onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void> }> = ({ isEditing, profileData, onImageUpload }) => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
-    fullName: "John Doe",
-    currentPosition: "Senior Software Engineer at Google",
-    industry: "tech",
-    yearsOfExperience: 8,
-    areasOfExpertise: ["Web Development", "Cloud Computing", "System Design"],
-    mentorshipBio: "Experienced software engineer passionate about helping students develop their technical skills and navigate their career paths.",
+    fullName: `${profileData.user?.firstName || ''} ${profileData.user?.lastName || ''}`,
+    currentPosition: profileData.profile.experience?.[0]?.title || "",
+    industry: "tech", // This would come from a separate field in the profile
+    yearsOfExperience: 8, // This would be calculated from experience
+    areasOfExpertise: profileData.profile.skills || [],
+    mentorshipBio: profileData.profile.bio || "",
     availabilityHours: "3-5",
-    isAvailableForMentoring: true
+    isAvailableForMentoring: profileData.profile.availability?.mentorshipAvailable || false
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -111,13 +444,31 @@ const AlumniProfileView: React.FC<{ isEditing: boolean }> = ({ isEditing }) => {
         <h2 className="text-2xl font-semibold mb-6">Basic Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex items-center space-x-4">
-            <div className="w-24 h-24 rounded-full bg-gray-200 flex-shrink-0">
-              {/* Profile image placeholder */}
+            <div className="w-24 h-24 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
+              {profileData.profile.avatarUrl ? (
+                <img 
+                  src={profileData.profile.avatarUrl} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                  <span className="text-gray-400 text-2xl">
+                    {profileData.user?.firstName?.[0] || ''}{profileData.user?.lastName?.[0] || ''}
+                  </span>
+                </div>
+              )}
             </div>
             {isEditing && (
-              <button className="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">
+              <label className="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
                 Change Photo
-              </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={onImageUpload}
+                  className="hidden"
+                />
+              </label>
             )}
           </div>
           <div className="space-y-4">
@@ -146,7 +497,7 @@ const AlumniProfileView: React.FC<{ isEditing: boolean }> = ({ isEditing }) => {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
-              <p className="text-gray-900">john.doe@example.com</p>
+              <p className="text-gray-900">{profileData.user?.email || ''}</p>
             </div>
           </div>
         </div>
@@ -337,17 +688,16 @@ const AlumniProfileView: React.FC<{ isEditing: boolean }> = ({ isEditing }) => {
 /**
  * Student profile view component
  */
-const StudentProfileView: React.FC<{ isEditing: boolean }> = ({ isEditing }) => {
-  // Form state (would be populated from API in a real implementation)
+const StudentProfileView: React.FC<{ isEditing: boolean; profileData: ProfileData; onImageUpload: (event: React.ChangeEvent<HTMLInputElement>) => Promise<void> }> = ({ isEditing, profileData, onImageUpload }) => {
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [formData, setFormData] = useState({
-    fullName: "Jane Smith",
-    major: "Computer Science",
-    year: "3",
-    expectedGraduation: "2024-05",
-    interestedIndustries: ["Tech", "Finance"],
-    careerInterests: "Interested in software development with a focus on cloud computing and distributed systems. Looking for opportunities to work on scalable applications.",
-    skills: ["JavaScript", "Python", "React"]
+    fullName: `${profileData.user?.firstName || ''} ${profileData.user?.lastName || ''}`,
+    major: profileData.profile.education?.[0]?.fieldOfStudy || "",
+    year: "3", // This would come from a separate field in the profile
+    expectedGraduation: "2024-05", // This would come from education
+    interestedIndustries: profileData.profile.interests || [],
+    careerInterests: profileData.profile.bio || "",
+    skills: profileData.profile.skills || []
   });
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -376,13 +726,31 @@ const StudentProfileView: React.FC<{ isEditing: boolean }> = ({ isEditing }) => 
         <h2 className="text-2xl font-semibold mb-6">Basic Information</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="flex items-center space-x-4">
-            <div className="w-24 h-24 rounded-full bg-gray-200 flex-shrink-0">
-              {/* Profile image placeholder */}
+            <div className="w-24 h-24 rounded-full bg-gray-200 flex-shrink-0 overflow-hidden">
+              {profileData.profile.avatarUrl ? (
+                <img 
+                  src={profileData.profile.avatarUrl} 
+                  alt="Profile" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div className="w-full h-full flex items-center justify-center bg-gray-100">
+                  <span className="text-gray-400 text-2xl">
+                    {profileData.user?.firstName?.[0] || ''}{profileData.user?.lastName?.[0] || ''}
+                  </span>
+                </div>
+              )}
             </div>
             {isEditing && (
-              <button className="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50">
+              <label className="px-4 py-2 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 cursor-pointer">
                 Change Photo
-              </button>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={onImageUpload}
+                  className="hidden"
+                />
+              </label>
             )}
           </div>
           <div className="space-y-4">
@@ -411,7 +779,7 @@ const StudentProfileView: React.FC<{ isEditing: boolean }> = ({ isEditing }) => 
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Email
               </label>
-              <p className="text-gray-900">jane.smith@example.com</p>
+              <p className="text-gray-900">{profileData.user?.email || ''}</p>
             </div>
           </div>
         </div>

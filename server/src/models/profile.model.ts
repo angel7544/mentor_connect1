@@ -1,5 +1,5 @@
 import { ObjectId, Collection } from 'mongodb';
-import { getDB, COLLECTIONS } from '../config/db.config';
+import { getDb } from '../config/database';
 
 export interface IProfile {
   _id?: ObjectId;
@@ -53,15 +53,26 @@ export interface IProfile {
 }
 
 export class ProfileModel {
-  private static getCollection(): Collection<IProfile> {
-    const db = getDB();
-    if (!db) throw new Error('Database connection not established');
-    return db.collection<IProfile>(COLLECTIONS.PROFILES);
+  static getCollection() {
+    const db = getDb();
+    if (!db) {
+      console.error('Database connection not established');
+      throw new Error('Database connection not established');
+    }
+    return db.collection<IProfile>('profiles');
   }
 
-  static async findByUserId(userId: string | ObjectId): Promise<IProfile | null> {
-    const _userId = typeof userId === 'string' ? new ObjectId(userId) : userId;
-    return this.getCollection().findOne({ userId: _userId });
+  static async findByUserId(userId: string | ObjectId) {
+    try {
+      console.log('Finding profile for user ID:', userId);
+      const _userId = typeof userId === 'string' ? new ObjectId(userId) : userId;
+      const profile = await this.getCollection().findOne({ userId: _userId });
+      console.log('Profile found:', profile ? 'Yes' : 'No');
+      return profile;
+    } catch (error) {
+      console.error('Error in findByUserId:', error);
+      throw error;
+    }
   }
 
   static async findById(id: string | ObjectId): Promise<IProfile | null> {
@@ -69,12 +80,16 @@ export class ProfileModel {
     return this.getCollection().findOne({ _id });
   }
 
-  static async create(profileData: IProfile): Promise<IProfile> {
-    profileData.createdAt = new Date();
-    profileData.updatedAt = new Date();
-    
-    const result = await this.getCollection().insertOne(profileData);
-    return { ...profileData, _id: result.insertedId };
+  static async create(profileData: Partial<IProfile>) {
+    try {
+      console.log('Creating new profile with data:', profileData);
+      const result = await this.getCollection().insertOne(profileData as IProfile);
+      console.log('Profile created with ID:', result.insertedId);
+      return { ...profileData, _id: result.insertedId };
+    } catch (error) {
+      console.error('Error in create:', error);
+      throw error;
+    }
   }
 
   static async updateById(id: string | ObjectId, updateData: Partial<IProfile>): Promise<boolean> {
@@ -89,16 +104,31 @@ export class ProfileModel {
     return result.modifiedCount > 0;
   }
 
-  static async updateByUserId(userId: string | ObjectId, updateData: Partial<IProfile>): Promise<boolean> {
-    const _userId = typeof userId === 'string' ? new ObjectId(userId) : userId;
-    updateData.updatedAt = new Date();
-    
-    const result = await this.getCollection().updateOne(
-      { userId: _userId },
-      { $set: updateData }
-    );
-    
-    return result.modifiedCount > 0;
+  static async updateByUserId(userId: string | ObjectId, updateData: Partial<IProfile>): Promise<IProfile | null> {
+    try {
+      console.log(`Updating profile for user ${userId} with data:`, updateData);
+      const collection = await this.getCollection();
+      
+      // Convert string ID to ObjectId if needed
+      const objectId = typeof userId === 'string' ? new ObjectId(userId) : userId;
+      
+      const result = await collection.findOneAndUpdate(
+        { userId: objectId },
+        { $set: updateData },
+        { returnDocument: 'after' }
+      );
+      
+      if (!result) {
+        console.error(`No profile found to update for user ${userId}`);
+        return null;
+      }
+      
+      console.log(`Profile updated successfully for user ${userId}`);
+      return result;
+    } catch (error) {
+      console.error(`Error updating profile for user ${userId}:`, error);
+      throw error;
+    }
   }
 
   static async findMentors(filters: {

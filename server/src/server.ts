@@ -4,6 +4,7 @@ import dotenv from 'dotenv';
 import { connectDB, disconnectDB } from './config/database';
 import helmet from 'helmet';
 import responseTime from 'response-time';
+import path from 'path';
 // matric collections 
 import client from 'prom-client'
 
@@ -56,22 +57,32 @@ app.use(responseTime((req: Request, res: Response, time: number) => {
 
 // Configure CORS with specific options
 app.use(cors({
- origin: '*',
- methods: ['GET', 'POST', 'PUT', 'DELETE'],
- allowedHeaders: ['Content-Type', 'Authorization'],
+  origin: ['http://localhost:4000', 'http://localhost:3000'], // Allow both common React ports
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  credentials: true,
+  maxAge: 86400 // 24 hours
 }));
 
 // Request logging middleware
 app.use((req: Request, res: Response, next: NextFunction) => {
-  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`, 
-    req.body ? JSON.stringify(req.body) : '');
+  console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`, {
+    headers: req.headers,
+    body: req.body,
+    query: req.query,
+    params: req.params
+  });
   next();
 });
 
 
 // Middleware
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(helmet());
+
+// Serve static files from uploads directory
+app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 
 
 
@@ -109,7 +120,13 @@ app.get('/', (req: Request, res: Response) => {
 app.use(notFoundHandler);
 
 // Apply the global error handler
-app.use(errorHandler);
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  console.error('Global error handler:', err);
+  res.status(500).json({
+    message: 'Internal server error',
+    error: process.env.NODE_ENV === 'development' ? err.message : undefined
+  });
+});
 
 // Handle process termination
 const gracefulShutdown = async () => {
