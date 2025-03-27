@@ -10,7 +10,19 @@ import {
   ChatBubbleLeftIcon,
   Bars3Icon,
   XMarkIcon,
-  BellIcon
+  BellIcon,
+  AcademicCapIcon,
+  BookOpenIcon,
+  QuestionMarkCircleIcon,
+  SparklesIcon,
+  UserGroupIcon,
+  ChatBubbleBottomCenterTextIcon,
+  DocumentDuplicateIcon,
+  CalendarDaysIcon,
+  ChatBubbleOvalLeftIcon,
+  BoltIcon,
+  LifebuoyIcon,
+  ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
 import useAuthStore from '../../store/authStore';
 
@@ -23,15 +35,15 @@ const MainLayout: React.FC = () => {
 
   const navigation = [
     ...(isAuthenticated ? [] : [{ name: 'Home', href: '/', icon: HomeIcon }]), // Include Home only if not authenticated
-    { name: 'Dashboard', href: '/dashboard', icon: HomeIcon, protected: true },
+    { name: 'Dashboard', href: '/dashboard', icon: SparklesIcon, protected: true },
     { name: 'Profile', href: '/profile', icon: UserIcon, protected: true },
-    { name: 'Mentorship', href: '/mentorship', icon: UsersIcon, protected: true },
-    { name: 'Messages', href: '/messages', icon: ChatBubbleLeftRightIcon, protected: true },
-    { name: 'Resources', href: '/resources', icon: DocumentTextIcon, protected: true },
-    { name: 'Events', href: '/events', icon: CalendarIcon, protected: true },
-    { name: 'Forum', href: '/forum', icon: ChatBubbleLeftIcon, protected: true },
-    { name: 'Chatbot', href: '/chatbot', icon: ChatBubbleLeftIcon, protected: true },
-    { name: 'Help', href: '/ContactUs', icon: ChatBubbleLeftIcon, protected: true },
+    { name: 'Mentorship', href: '/mentorship', icon: AcademicCapIcon, protected: true },
+    { name: 'Messages', href: '/messages', icon: ChatBubbleBottomCenterTextIcon, protected: true },
+    { name: 'Resources', href: '/resources', icon: BookOpenIcon, protected: true },
+    { name: 'Events', href: '/events', icon: CalendarDaysIcon, protected: true },
+    { name: 'Forum', href: '/forum', icon: UserGroupIcon, protected: true },
+    { name: 'Chatbot', href: '/chatbot', icon: BoltIcon, protected: true },
+    { name: 'Help', href: '/ContactUs', icon: LifebuoyIcon, protected: true },
   ];
 
   const handleLogout = () => {
@@ -61,11 +73,11 @@ const MainLayout: React.FC = () => {
           </div>
           
           <div className="flex flex-shrink-0 items-center px-4">
-            <Link to="/" className="text-xl font-bold text-primary-600">MentorConnect</Link>
+            <Link to="/" className="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors duration-200">MentorConnect</Link>
           </div>
           
-          <div className="mt-5 h-0 flex-1 overflow-y-auto">
-            <nav className="space-y-1 px-2">
+          <div className="mt-8 h-0 flex-1 overflow-y-auto">
+            <nav className="space-y-2 px-3">
               {navigation.map((item) => {
                 if (item.protected && !isAuthenticated) return null;
                 
@@ -73,17 +85,17 @@ const MainLayout: React.FC = () => {
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`group flex items-center px-2 py-2 text-base font-medium rounded-md ${
+                    className={`group flex items-center px-4 py-3 text-base font-medium rounded-lg transition-all duration-200 ${
                       location.pathname === item.href
-                        ? 'bg-primary-100 text-primary-700'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        ? 'bg-primary-50 text-primary-700 shadow-sm'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:shadow-sm'
                     }`}
                   >
                     <item.icon
-                      className={`mr-4 h-6 w-6 flex-shrink-0 ${
+                      className={`mr-4 h-5 w-5 flex-shrink-0 transition-all duration-200 ${
                         location.pathname === item.href
-                          ? 'text-primary-700'
-                          : 'text-gray-400 group-hover:text-gray-500'
+                          ? 'text-primary-700 transform scale-110'
+                          : 'text-gray-400 group-hover:text-gray-500 group-hover:scale-105'
                       }`}
                       aria-hidden="true"
                     />
@@ -98,9 +110,10 @@ const MainLayout: React.FC = () => {
             <div className="border-t border-gray-200 p-4">
               <button
                 onClick={handleLogout}
-                className="w-full text-left px-2 py-2 text-base font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all duration-200 hover:shadow-md group"
               >
-                Logout
+                <ArrowRightOnRectangleIcon className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
+                <span>Logout</span>
               </button>
             </div>
           )}
@@ -112,27 +125,27 @@ const MainLayout: React.FC = () => {
         <div className="flex min-h-0 flex-1 flex-col border-r border-gray-200 bg-white">
           <div className="flex flex-1 flex-col overflow-y-auto pt-5 pb-4">
             <div className="flex flex-shrink-0 items-center px-4">
-              <Link to="/" className="text-xl font-bold text-primary-600">MentorConnect</Link>
+              <Link to="/" className="text-2xl font-bold text-primary-600 hover:text-primary-700 transition-colors duration-200">MentorConnect</Link>
             </div>
             
-            <nav className="mt-5 flex-1 space-y-1 px-2">
+            <nav className="mt-8 flex-1 space-y-2 px-3">
               {navigation.map((item) => {
                 if (item.protected && !isAuthenticated) return null;
                 return (
                   <Link
                     key={item.name}
                     to={item.href}
-                    className={`group flex items-center px-2 py-2 text-sm font-medium rounded-md ${
+                    className={`group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 ${
                       location.pathname === item.href
-                        ? 'bg-primary-100 text-primary-700'
-                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900'
+                        ? 'bg-primary-50 text-primary-700 shadow-sm'
+                        : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900 hover:shadow-sm'
                     }`}
                   >
                     <item.icon
-                      className={`mr-3 h-5 w-5 flex-shrink-0 ${
+                      className={`mr-4 h-5 w-5 flex-shrink-0 transition-all duration-200 ${
                         location.pathname === item.href
-                          ? 'text-primary-700'
-                          : 'text-gray-400 group-hover:text-gray-500'
+                          ? 'text-primary-700 transform scale-110'
+                          : 'text-gray-400 group-hover:text-gray-500 group-hover:scale-105'
                       }`}
                       aria-hidden="true"
                     />
@@ -147,9 +160,10 @@ const MainLayout: React.FC = () => {
             <div className="border-t border-gray-200 p-4">
               <button
                 onClick={handleLogout}
-                className="w-full text-left px-2 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-gray-900 rounded-md"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 text-sm font-medium text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-all duration-200 hover:shadow-md group"
               >
-                Logout
+                <ArrowRightOnRectangleIcon className="h-5 w-5 transition-transform duration-200 group-hover:translate-x-1" />
+                <span>Logout</span>
               </button>
             </div>
           )}
