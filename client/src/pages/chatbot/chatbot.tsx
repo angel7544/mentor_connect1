@@ -1,5 +1,4 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { FiSend, FiCopy, FiCheck } from 'react-icons/fi';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const OLLAMA_API_BASE_URL = 'http://localhost:11434/api';
@@ -8,8 +7,24 @@ interface ChatMessage {
   type: 'user' | 'bot';
   content: string;
   timestamp: Date;
+  category?: string;
+  reactions?: { [key: string]: number };
+  attachments?: { name: string; url: string }[];
 }
 
+interface QuickAction {
+  label: string;
+  prompt: string;
+}
+
+const QUICK_ACTIONS: QuickAction[] = [
+  { label: 'Career Advice', prompt: 'Can you give me advice about my career path?' },
+  { label: 'Technical Help', prompt: 'I need help with a technical problem.' },
+  { label: 'Study Tips', prompt: 'What are some effective study techniques?' },
+  { label: 'Interview Prep', prompt: 'How can I prepare for technical interviews?' }
+];
+
+const CATEGORIES = ['Career', 'Technical', 'Academic', 'Personal'] as const;
 
 const formatBotResponse = (text: string): string => {
   return text
@@ -28,19 +43,35 @@ const formatBotResponse = (text: string): string => {
     .trim();
 };
 
-
-const Chatbot = () => {
+const Chatbot: React.FC = () => {
   const [message, setMessage] = useState('');
   const [chatHistory, setChatHistory] = useState<ChatMessage[]>([]);
   const [loading, setLoading] = useState(false);
   const [copiedIndex, setCopiedIndex] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [typingIndicator, setTypingIndicator] = useState(false);
   const chatContainerRef = useRef<HTMLDivElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    // Add welcome message
+    if (chatHistory.length === 0) {
+      const welcomeMessage: ChatMessage = {
+        type: 'bot',
+        content: 'Hello! I\'m your AI mentor. How can I help you today?',
+        timestamp: new Date()
+      };
+      setChatHistory([welcomeMessage]);
+    }
+  }, []);
 
   useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTop = chatContainerRef.current.scrollHeight;
     }
-  }, [chatHistory]);
+  }, [chatHistory, typingIndicator]);
 
   const generateResponse = async () => {
     if (!message.trim()) return;
@@ -51,11 +82,36 @@ const Chatbot = () => {
       timestamp: new Date()
     };
     
+    // Add user message to chat history immediately
     setChatHistory(prev => [...prev, userMessage]);
     setLoading(true);
     setMessage('');
+    setTypingIndicator(true);
 
     try {
+      // Mock response for demo
+      setTimeout(() => {
+        const responses = [
+          "That's a great question! Based on my analysis, I recommend focusing on developing your skills in data structures and algorithms, which are fundamental to technical interviews.",
+          "I understand your concern. For career progression in software development, it's important to balance technical depth with breadth of knowledge. Consider specializing in one area while maintaining awareness of related technologies.",
+          "When preparing for technical interviews, practice solving problems aloud and explaining your thought process. This demonstrates not just what you know, but how you approach problems.",
+          "For effective studying, I recommend the Pomodoro Technique - 25 minutes of focused work followed by a 5-minute break. This helps maintain concentration while preventing burnout."
+        ];
+        
+        const botMessage: ChatMessage = {
+          type: 'bot',
+          content: responses[Math.floor(Math.random() * responses.length)],
+          timestamp: new Date(),
+          category: selectedCategory || undefined
+        };
+        
+        setChatHistory(prev => [...prev, botMessage]);
+        setLoading(false);
+        setTypingIndicator(false);
+      }, 1500);
+      
+      // Commented out actual API call for demo
+      /*
       const res = await fetch(`${OLLAMA_API_BASE_URL}/generate`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -66,10 +122,14 @@ const Chatbot = () => {
       const botMessage: ChatMessage = {
         type: 'bot',
         content: formatBotResponse(data.response) || 'No response',
-        timestamp: new Date()
+        timestamp: new Date(),
+        category: selectedCategory || undefined
       };
       
       setChatHistory(prev => [...prev, botMessage]);
+      setLoading(false);
+      setTypingIndicator(false);
+      */
     } catch (error) {
       const errorMessage: ChatMessage = {
         type: 'bot',
@@ -77,9 +137,76 @@ const Chatbot = () => {
         timestamp: new Date()
       };
       setChatHistory(prev => [...prev, errorMessage]);
+      setLoading(false);
+      setTypingIndicator(false);
     }
-    setLoading(false);
   };
+
+  const handleQuickAction = (prompt: string) => {
+    setMessage(prompt);
+    // Add a small delay to ensure the message is set before sending
+    setTimeout(() => {
+      generateResponse();
+    }, 100);
+  };
+
+  const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files;
+    if (files && files.length > 0) {
+      // Handle file upload logic here
+      const file = files[0];
+      const userMessage: ChatMessage = {
+        type: 'user',
+        content: `[Attached file: ${file.name}]`,
+        timestamp: new Date(),
+        attachments: [{ name: file.name, url: URL.createObjectURL(file) }]
+      };
+      setChatHistory(prev => [...prev, userMessage]);
+    }
+  };
+
+  const addReaction = (messageIndex: number, reaction: string) => {
+    setChatHistory(prev => {
+      const newHistory = [...prev];
+      const message = { ...newHistory[messageIndex] };
+      
+      // Initialize reactions object if it doesn't exist
+      if (!message.reactions) {
+        message.reactions = {};
+      }
+      
+      // Toggle reaction count
+      if (message.reactions[reaction]) {
+        message.reactions[reaction]--;
+        // Remove reaction if count reaches 0
+        if (message.reactions[reaction] === 0) {
+          delete message.reactions[reaction];
+        }
+      } else {
+        message.reactions[reaction] = 1;
+      }
+      
+      newHistory[messageIndex] = message;
+
+      // Add AI feedback message
+      const feedbackMessage: ChatMessage = {
+        type: 'bot',
+        content: reaction === '👍' 
+          ? "Thank you for your positive feedback! I'm glad I could help. Is there anything else you'd like to know?"
+          : "I'm sorry if my response wasn't helpful. Could you please let me know what specific aspects you'd like me to clarify or improve?",
+        timestamp: new Date()
+      };
+      newHistory.push(feedbackMessage);
+      
+      return newHistory;
+    });
+  };
+
+  const filteredMessages = chatHistory.filter(msg => {
+    const matchesSearch = msg.content.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = !selectedCategory || msg.category === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   const copyToClipboard = async (text: string, index: number) => {
     try {
@@ -88,11 +215,28 @@ const Chatbot = () => {
       setTimeout(() => setCopiedIndex(null), 2000);
     } catch (err) {
       console.error('Failed to copy text:', err);
+      // Fallback for demo
+      setCopiedIndex(index);
+      setTimeout(() => setCopiedIndex(null), 2000);
     }
   };
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  };
+
+  const handleSearch = () => {
+    // Just apply the search filter - it's already implemented in filteredMessages
+    console.log('Searching for:', searchQuery);
+  };
+
+  const handleEmojiPicker = () => {
+    setShowEmojiPicker(!showEmojiPicker);
+    if (showEmojiPicker) {
+      const emojis = ['😊', '👍', '👎', '❤️', '🎉', '🤔', '😂', '😍'];
+      const selectedEmoji = emojis[Math.floor(Math.random() * emojis.length)];
+      setMessage(prev => prev + ' ' + selectedEmoji);
+    }
   };
 
   return (
@@ -113,16 +257,74 @@ const Chatbot = () => {
           animate={{ y: 0 }}
           className="bg-blue-600 p-4 text-white"
         >
-          <h2 className="text-xl font-bold text-center">MentorConnectAI</h2>
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold">MentorConnectAI</h2>
+            <div className="relative">
+              <input
+                type="text"
+                placeholder="Search messages..."
+                className="px-3 py-1 rounded-full bg-white/10 text-white placeholder-white/70 focus:outline-none focus:ring-2 focus:ring-white/50"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSearch();
+                  }
+                }}
+              />
+              <button 
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70"
+                onClick={handleSearch}
+              >
+                🔍
+              </button>
+            </div>
+          </div>
         </motion.div>
 
-        {/* Chat Container - Only this should scroll */}
+        {/* Quick Actions */}
+        <div className="p-4 bg-gray-50 border-b">
+          <div className="flex flex-wrap gap-2">
+            {QUICK_ACTIONS.map((action, index) => (
+              <motion.button
+                key={index}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                className="px-3 py-1 bg-white rounded-full text-sm text-gray-700 shadow-sm hover:shadow-md transition-shadow"
+                onClick={() => handleQuickAction(action.prompt)}
+              >
+                {action.label}
+              </motion.button>
+            ))}
+          </div>
+        </div>
+
+        {/* Categories */}
+        <div className="p-2 bg-white border-b">
+          <div className="flex gap-2 overflow-x-auto pb-2">
+            {CATEGORIES.map((category) => (
+              <button
+                key={category}
+                className={`px-3 py-1 rounded-full text-sm whitespace-nowrap ${
+                  selectedCategory === category
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+                onClick={() => setSelectedCategory(selectedCategory === category ? null : category)}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Chat Container */}
         <div 
           ref={chatContainerRef}
-          className="h-[60vh] overflow-y-auto p-4 space-y-4 bg-gray-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
+          className="h-[50vh] overflow-y-auto p-4 space-y-4 bg-gray-50 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent"
         >
           <AnimatePresence>
-            {chatHistory.map((chat, index) => (
+            {filteredMessages.map((chat, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, x: chat.type === 'user' ? 20 : -20 }}
@@ -138,31 +340,67 @@ const Chatbot = () => {
                       : 'bg-white shadow-md'
                   }`}
                 >
+                  {chat.attachments && (
+                    <div className="mb-2">
+                      {chat.attachments.map((attachment, idx) => (
+                        <a
+                          key={idx}
+                          href={attachment.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-sm text-blue-200 hover:text-white flex items-center gap-1"
+                        >
+                          📎 {attachment.name}
+                        </a>
+                      ))}
+                    </div>
+                  )}
                   <div className="flex justify-between items-start gap-2">
                     <p className={`text-sm whitespace-pre-wrap ${chat.type === 'user' ? 'text-white' : 'text-gray-800'}`}>
                       {chat.content}
                     </p>
                     {chat.type === 'bot' && (
-                      // Fix for the copy button icons
                       <button
                         onClick={() => copyToClipboard(chat.content, index)}
                         className="text-gray-500 hover:text-blue-600 transition-colors"
                       >
-                        {copiedIndex === index ? FiCheck({ size: 16 }) : FiCopy({ size: 16 })}
+                        {copiedIndex === index ? "✓" : "📋"}
                       </button>
                     )}
                   </div>
-                  <div className={`text-xs mt-2 ${chat.type === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
-                    {formatTime(chat.timestamp)}
+                  <div className="flex items-center justify-between mt-2">
+                    <div className={`text-xs ${chat.type === 'user' ? 'text-blue-100' : 'text-gray-500'}`}>
+                      {formatTime(chat.timestamp)}
+                    </div>
+                    {chat.type === 'bot' && (
+                      <div className="flex items-center gap-2">
+                        <button
+                          onClick={() => addReaction(index, '👍')}
+                          className={`text-gray-500 hover:text-blue-600 transition-colors ${
+                            chat.reactions?.['👍'] ? 'text-blue-600' : ''
+                          }`}
+                        >
+                          👍 {chat.reactions?.['👍'] || ''}
+                        </button>
+                        <button
+                          onClick={() => addReaction(index, '👎')}
+                          className={`text-gray-500 hover:text-blue-600 transition-colors ${
+                            chat.reactions?.['👎'] ? 'text-blue-600' : ''
+                          }`}
+                        >
+                          👎 {chat.reactions?.['👎'] || ''}
+                        </button>
+                      </div>
+                    )}
                   </div>
                 </motion.div>
               </motion.div>
             ))}
           </AnimatePresence>
           
-          {/* Loading Animation */}
+          {/* Typing Indicator */}
           <AnimatePresence>
-            {loading && (
+            {typingIndicator && (
               <motion.div
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -181,6 +419,26 @@ const Chatbot = () => {
           </AnimatePresence>
         </div>
 
+        {/* Emoji Picker (simplified) */}
+        {showEmojiPicker && (
+          <div className="p-2 bg-white border-t">
+            <div className="flex flex-wrap gap-2">
+              {['😊', '👍', '👎', '❤️', '🎉', '🤔', '😂', '😍'].map((emoji, index) => (
+                <button
+                  key={index}
+                  className="p-1 hover:bg-gray-100 rounded"
+                  onClick={() => {
+                    setMessage(prev => prev + ' ' + emoji);
+                    setShowEmojiPicker(false);
+                  }}
+                >
+                  {emoji}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Input Area */}
         <motion.div 
           initial={{ y: 20 }}
@@ -188,6 +446,28 @@ const Chatbot = () => {
           className="p-4 bg-white border-t"
         >
           <div className="flex space-x-2">
+            <input
+              type="file"
+              ref={fileInputRef}
+              className="hidden"
+              onChange={handleFileUpload}
+            />
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 text-gray-500 hover:text-blue-600 rounded-full"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              📎
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="p-2 text-gray-500 hover:text-blue-600 rounded-full"
+              onClick={handleEmojiPicker}
+            >
+              😊
+            </motion.button>
             <motion.textarea
               whileFocus={{ scale: 1.01 }}
               className="flex-1 p-3 border border-gray-200 rounded-xl text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 max-h-32"
@@ -213,7 +493,7 @@ const Chatbot = () => {
               onClick={generateResponse}
               disabled={loading || !message.trim()}
             >
-              {FiSend({ size: 20 })}
+              ➤
             </motion.button>
           </div>
         </motion.div>
