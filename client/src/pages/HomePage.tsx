@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MdCancel } from "react-icons/md";
-import { FaLinkedin } from "react-icons/fa";
+// import { FaLinkedin } from "react-icons/fa";
 import { IoMdMenu } from "react-icons/io";
 import { Link,useLocation } from 'react-router-dom';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
@@ -327,7 +327,7 @@ const HomePage: React.FC = () => {
       <About/>
       <Features/>
       <Fnq/>
-      {/* <Team/> */}
+      <Team/>
       <Footer/>
       {/* Features section */}
     </div>
@@ -782,6 +782,87 @@ const Features: React.FC = () => {
   );
 };
 
+// const Team: React.FC = () => {
+//   const teamMembers = [
+//     {
+//       name: "Sneha Kumari",
+//       role: "Team Lead",
+//       image: "https://media.licdn.com/dms/image/v2/D5603AQEKFxNGtE0AYg/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1727548244056?e=1747872000&v=beta&t=48luPokfDSt4vR-5FykOWru15j2b-8DhjGOPe1z7pfg",
+//       linkedin: "https://www.linkedin.com/in/sneha-kumari-ss/"
+//     },
+//     {
+//       name: "Ashutosh kumar",
+//       role: "Developer",
+//       image: "https://media.licdn.com/dms/image/v2/D4D03AQFzSZQ3JBZ3vQ/profile-displayphoto-shrink_400_400/profile-displayphoto-shrink_400_400/0/1728229346985?e=1747872000&v=beta&t=GpYiPxS7VFMAEdUQyJkFRzynYZQk3n2FXrjcngevi_4",
+//       linkedin: "https://www.linkedin.com/in/ashukr321/"
+//     },
+
+//     {
+//       name: "Shivam kumar sinha",
+//       role: "Developer",
+//       image: "https://media.licdn.com/dms/image/v2/D4D03AQG9heV8RJilig/profile-displayphoto-shrink_400_400/B4DZRFefprG4Ag-/0/1736332410223?e=1747872000&v=beta&t=NdcFXuiG3npcxxbIMAcBuaf7COIeYUa8RUkRbEfVTGg",
+//       linkedin: "https://www.linkedin.com/in/shivam-kumar-sinha-55aa9b273/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app"
+//     },
+//     {
+//       name: "Angel (Mehul) Singh",
+//       role: "Developer",
+//       image: "https://media.licdn.com/dms/image/v2/D4D03AQFinZ5z30I1nQ/profile-displayphoto-shrink_400_400/B4DZTRVNVDGkAk-/0/1738678785903?e=1747872000&v=beta&t=j_Hjqh27QfCvmI_H7m-1sa7bvJgJGNXBOeSN6RSyQJ0",
+//       linkedin: "https://www.linkedin.com/in/angel3002/"
+//     },
+
+    
+//   ];
+
+//   return (
+//     <div className="bg-white py-24 sm:py-32" id="team">
+//       <div className="mx-auto max-w-7xl px-6 lg:px-8">
+//         {/* Header Section */}
+//         <div className="mx-auto max-w-2xl text-center mb-16">
+//           <h2 className="text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+//             Meet Our Team
+//           </h2>
+//           <p className="mt-6 text-lg leading-8 text-gray-600">
+//             Our team is a diverse group of individuals who are passionate about helping students succeed.
+//           </p>
+//         </div>
+
+//         {/* Team Grid */}
+//         <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
+//           {teamMembers.map((member, index) => (
+//             <motion.div
+//               key={index}
+//               initial={{ opacity: 0, y: 20 }}
+//               animate={{ opacity: 1, y: 0 }}
+//               transition={{ duration: 0.5, delay: index * 0.1 }}
+//               className="group relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 transform hover:-translate-y-2"
+//             >
+//               <div className="aspect-w-3 aspect-h-4">
+//                 <img
+//                   src={member.image}
+//                   alt={member.name}
+//                   className="h-full w-full object-cover object-center"
+//                 />
+//                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+//               </div>
+//               <div className="absolute bottom-0 left-0 right-0 p-6 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+//                 <h3 className="text-xl font-semibold text-white">{member.name}</h3>
+//                 <p className="mt-1 text-sm text-gray-300">{member.role}</p>
+//                 <a
+//                   href={member.linkedin}
+//                   target="_blank"
+//                   rel="noopener noreferrer"
+//                   className="mt-4 inline-block text-white hover:text-primary-400 transition-colors duration-200"
+//                 >
+//                   {/* <FaLinkedin size={24} /> */}
+//                 </a>
+//               </div>
+//             </motion.div>
+//           ))}
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
 const Team: React.FC = () => {
   const teamMembers = [
     {
@@ -860,10 +941,9 @@ const Team: React.FC = () => {
           ))}
         </div>
       </div>
-    </div>
-  );
+    </div>
+  );
 };
-
 
 const Fnq: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
