@@ -41,10 +41,7 @@ const INDIAN_NAMES = {
   ],
   alumni: [
     { name: 'Amit Kumar', role: 'alumni', company: 'Google', position: 'Senior Software Engineer' },
-    { name: 'Deepika Singh', role: 'alumni', company: 'Microsoft', position: 'Product Manager' },
-    { name: 'Rajesh Iyer', role: 'alumni', company: 'Amazon', position: 'Technical Lead' },
-    { name: 'Sneha Menon', role: 'alumni', company: 'Meta', position: 'Full Stack Developer' },
-    { name: 'Vikram Malhotra', role: 'alumni', company: 'Adobe', position: 'Architect' },
+    
   ]
 };
 
@@ -452,47 +449,8 @@ const ConversationsList: React.FC<{
       unreadCount: 2,
       tags: ['Career Guidance', 'Google']
     },
-    {
-      id: '2',
-      participants: [
-        {
-          id: '3',
-          name: 'Deepika Singh',
-          avatar: INDIAN_AVATARS[1],
-          role: 'alumni',
-          isOnline: false,
-          company: 'Microsoft',
-          position: 'Product Manager'
-        }
-      ],
-      lastMessage: {
-        content: 'I\'ve shared some resources about system design interviews. Let me know if you need more help!',
-        timestamp: new Date(2023, 4, 14, 10, 15),
-        senderId: '3'
-      },
-      unreadCount: 0,
-      tags: ['Interview Prep', 'Microsoft']
-    },
-    {
-      id: '3',
-      participants: [
-        {
-          id: '4',
-          name: 'Priya Sharma',
-          avatar: INDIAN_AVATARS[2],
-          role: 'student',
-          isOnline: true,
-          specialization: 'Computer Science'
-        }
-      ],
-      lastMessage: {
-        content: 'Thank you for your guidance! The resources were very helpful.',
-        timestamp: new Date(2023, 4, 13, 17, 45),
-        senderId: '1'
-      },
-      unreadCount: 0,
-      tags: ['Computer Science']
-    }
+    
+   
   ];
 
   const filteredConversations = conversations.filter(conv => {
