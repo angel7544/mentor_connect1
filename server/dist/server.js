@@ -8,6 +8,8 @@ const cors_1 = __importDefault(require("cors"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const database_1 = require("./config/database");
 const helmet_1 = __importDefault(require("helmet"));
+const response_time_1 = __importDefault(require("response-time"));
+const path_1 = __importDefault(require("path"));
 // matric collections 
 const prom_client_1 = __importDefault(require("prom-client"));
 // Import middleware
@@ -25,23 +27,48 @@ const forum_routes_1 = __importDefault(require("./routes/forum.routes"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
 const port = process.env.PORT || 5000;
-//  create functuion to collect Defualt Matrics 
+//  create function to collect Default Metrics 
 const collectDefaultMetrics = prom_client_1.default.collectDefaultMetrics;
 collectDefaultMetrics({ register: prom_client_1.default.register });
+// create the custom dashboard 
+const reqResTime = new prom_client_1.default.Histogram({
+    name: 'http_req_res_time_mentor_connect',
+    help: 'Request response time in seconds',
+    labelNames: ['method', 'route', 'status_code'],
+    buckets: [1, 50, 100, 200, 500, 1000, 2000],
+});
+app.use((0, response_time_1.default)((req, res, time) => {
+    reqResTime.labels({
+        method: req.method,
+        route: req.url,
+        status_code: res.statusCode,
+    })
+        .observe(time);
+}));
 // Configure CORS with specific options
 app.use((0, cors_1.default)({
-    origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: ['http://localhost:4000', 'http://localhost:3000'], // Allow both common React ports
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+    credentials: true,
+    maxAge: 86400 // 24 hours
 }));
 // Request logging middleware
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`, req.body ? JSON.stringify(req.body) : '');
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`, {
+        headers: req.headers,
+        body: req.body,
+        query: req.query,
+        params: req.params
+    });
     next();
 });
 // Middleware
 app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, helmet_1.default)());
+// Serve static files from uploads directory
+app.use('/uploads', express_1.default.static(path_1.default.join(__dirname, '../uploads')));
 // create the  matric routes 
 app.get('/metrics', async (req, res) => {
     console.log('Metrics route accessed'); // Log when the route is accessed
@@ -64,7 +91,13 @@ app.get('/', (req, res) => {
 // Apply the 404 handler for undefined routes
 app.use(error_middleware_1.notFoundHandler);
 // Apply the global error handler
-app.use(error_middleware_1.errorHandler);
+app.use((err, req, res, next) => {
+    console.error('Global error handler:', err);
+    res.status(500).json({
+        message: 'Internal server error',
+        error: process.env.NODE_ENV === 'development' ? err.message : undefined
+    });
+});
 // Handle process termination
 const gracefulShutdown = async () => {
     console.log('Shutting down gracefully...');

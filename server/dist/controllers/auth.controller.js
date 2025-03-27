@@ -14,7 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getCurrentUser = exports.refreshToken = exports.login = exports.signup = void 0;
+exports.supportContact = exports.subscription = exports.getCurrentUser = exports.refreshToken = exports.login = exports.signup = void 0;
 const user_model_1 = require("../models/user.model");
 const auth_utils_1 = require("../utils/auth.utils");
 const mailoptions_1 = require("../utils/mailoptions");
@@ -259,3 +259,33 @@ const getCurrentUser = async (req, res) => {
     }
 };
 exports.getCurrentUser = getCurrentUser;
+const subscription = async (req, res) => {
+    try {
+        const email = req.body.email;
+        console.log(email);
+        if (!email) {
+            return res.status(400).json({ message: "Enter vaid Email" });
+        }
+        await mailtransport_1.default.sendMail((0, mailoptions_1.Subscriptions)(email));
+        return res.status(200).json({ message: "Subscription Successfull" });
+    }
+    catch (error) {
+        console.error('Error in subscription:', error);
+    }
+};
+exports.subscription = subscription;
+const supportContact = async (req, res) => {
+    try {
+        const { firstName, email, subject, message } = req.body;
+        console.log(req.body);
+        if (!firstName || !email || !subject || !message) {
+            return res.status(400).json({ message: "Enter all fields" });
+        }
+        mailtransport_1.default.sendMail((0, mailoptions_1.supportContactOpition)(firstName, email, subject, message));
+        return res.status(200).json({ message: "Message Sent Successfully" });
+    }
+    catch (error) {
+        console.error('Error in support:', error);
+    }
+};
+exports.supportContact = supportContact;
