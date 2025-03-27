@@ -207,7 +207,7 @@ const AlumniMentorshipView: React.FC<MentorshipViewProps> = ({ activeTab, search
       nextMeeting: {
         date: new Date(2024, 3, 20, 15, 0),
         topic: 'Mock Interview Practice',
-        link: 'https://meet.example.com/abc123'
+        link: 'https://meet.google.com/wos-vqex-jks'
       },
       goals: [
         'Prepare for technical interviews',
@@ -229,7 +229,7 @@ const AlumniMentorshipView: React.FC<MentorshipViewProps> = ({ activeTab, search
       nextMeeting: {
         date: new Date(2024, 3, 22, 16, 30),
         topic: 'Career Planning Session',
-        link: 'https://meet.example.com/def456'
+        link: 'https://meet.google.com/wos-vqex-jks'
       },
       goals: [
         'Develop 5-year career plan',
@@ -433,7 +433,7 @@ const StudentMentorshipView: React.FC<MentorshipViewProps> = ({ activeTab, searc
       nextMeeting: {
         date: new Date(2024, 3, 20, 15, 0),
         topic: 'Mock Interview Practice',
-        link: 'https://meet.example.com/abc123'
+        link: 'https://meet.google.com/wos-vqex-jks'
       },
       goals: [
         'Prepare for technical interviews',
@@ -525,6 +525,14 @@ const MentorshipSessionCard: React.FC<{
   session: MentorshipSession; 
   isAlumniView: boolean;
 }> = ({ session, isAlumniView }) => {
+  const [showContactDialog, setShowContactDialog] = useState(false);
+  const [showSuccessDialog, setShowSuccessDialog] = useState(false);
+  const [showRescheduleDialog, setShowRescheduleDialog] = useState(false);
+  const [showRescheduleSuccessDialog, setShowRescheduleSuccessDialog] = useState(false);
+  const [message, setMessage] = useState('');
+  const [newDate, setNewDate] = useState('');
+  const [newTime, setNewTime] = useState('');
+
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString([], { month: 'short', day: 'numeric', year: 'numeric' });
   };
@@ -539,98 +547,376 @@ const MentorshipSessionCard: React.FC<{
     });
   };
 
+  const handleSendMessage = () => {
+    // Here you would typically send the message to your backend
+    console.log('Sending message:', message);
+    setShowContactDialog(false);
+    setShowSuccessDialog(true);
+    setMessage('');
+  };
+
+  const handleReschedule = () => {
+    // Here you would typically send the reschedule request to your backend
+    console.log('Rescheduling to:', newDate, newTime);
+    setShowRescheduleDialog(false);
+    setShowRescheduleSuccessDialog(true);
+    setNewDate('');
+    setNewTime('');
+  };
+
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-      <div className="flex items-start justify-between mb-4">
-        <div className="flex items-center">
-          <div className="w-12 h-12 rounded-full bg-gray-300 mr-4"></div>
+    <>
+      <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+        <div className="flex items-start justify-between mb-4">
+          <div className="flex items-center">
+            <div className="w-12 h-12 rounded-full bg-gray-300 mr-4"></div>
+            <div>
+              <h3 className="text-lg font-semibold text-gray-900">
+                {isAlumniView ? session.studentName : session.mentorName}
+              </h3>
+              <p className="text-sm text-gray-500">
+                Started {formatDate(session.startDate)}
+              </p>
+            </div>
+          </div>
           <div>
-            <h3 className="text-lg font-semibold text-gray-900">
-              {isAlumniView ? session.studentName : session.mentorName}
-            </h3>
-            <p className="text-sm text-gray-500">
-              Started {formatDate(session.startDate)}
-            </p>
+            <span className={`inline-block px-2 py-1 text-xs rounded-full ${
+              session.status === 'active' ? 'bg-green-100 text-green-800' :
+              session.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
+              session.status === 'completed' ? 'bg-blue-100 text-blue-800' :
+              'bg-red-100 text-red-800'
+            }`}>
+              {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
+            </span>
           </div>
         </div>
-        <div>
-          <span className={`inline-block px-2 py-1 text-xs rounded-full ${
-            session.status === 'active' ? 'bg-green-100 text-green-800' :
-            session.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-            session.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-            'bg-red-100 text-red-800'
-          }`}>
-            {session.status.charAt(0).toUpperCase() + session.status.slice(1)}
-          </span>
+
+        {session.status === 'active' && session.nextMeeting && (
+          <div className="mb-4 bg-indigo-50 p-3 rounded-md">
+            <h4 className="text-sm font-medium text-indigo-800 mb-1">Next Meeting</h4>
+            <p className="text-sm text-indigo-700">{formatMeetingTime(session.nextMeeting.date)}</p>
+            <p className="text-sm text-indigo-600">{session.nextMeeting.topic}</p>
+            <div className="mt-2 flex space-x-2">
+              <a
+                href={session.nextMeeting.link}
+                className="text-xs bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition-colors"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Join Meeting
+              </a>
+              <button 
+                className="text-xs bg-white text-indigo-600 border border-indigo-600 px-3 py-1 rounded-md hover:bg-indigo-50 transition-colors"
+                onClick={() => setShowRescheduleDialog(true)}
+              >
+                Reschedule
+              </button>
+            </div>
+          </div>
+        )}
+
+        <h4 className="text-sm font-medium text-gray-700 mb-1">Goals</h4>
+        <ul className="mb-4 text-sm text-gray-600 space-y-1">
+          {session.goals.map((goal, index) => (
+            <li key={index} className="flex items-start">
+              <span className="inline-block w-4 h-4 mr-2 mt-0.5">
+                <svg className="text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </span>
+              {goal}
+            </li>
+          ))}
+        </ul>
+
+        <div className="mb-4">
+          <div className="flex justify-between text-sm text-gray-600 mb-1">
+            <span>Progress</span>
+            <span>{session.progress}%</span>
+          </div>
+          <div className="w-full bg-gray-200 rounded-full h-2">
+            <div className="bg-indigo-600 h-2 rounded-full" style={{ width: `${session.progress}%` }}></div>
+          </div>
+        </div>
+
+        <div className="flex space-x-2">
+          <button 
+            className="flex-1 px-3 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition-colors"
+            onClick={() => setShowContactDialog(true)}
+          >
+            {isAlumniView ? 'Send Message' : 'Contact Mentor'}
+          </button>
+          {session.status === 'pending' && isAlumniView && (
+            <div className="flex space-x-2">
+              <button className="px-3 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors">
+                Accept
+              </button>
+              <button className="px-3 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition-colors">
+                Decline
+              </button>
+            </div>
+          )}
+          {session.status === 'active' && (
+            <button className="px-3 py-2 bg-gray-200 text-gray-700 text-sm rounded-md hover:bg-gray-300 transition-colors">
+              View Details
+            </button>
+          )}
         </div>
       </div>
 
-      {session.status === 'active' && session.nextMeeting && (
-        <div className="mb-4 bg-indigo-50 p-3 rounded-md">
-          <h4 className="text-sm font-medium text-indigo-800 mb-1">Next Meeting</h4>
-          <p className="text-sm text-indigo-700">{formatMeetingTime(session.nextMeeting.date)}</p>
-          <p className="text-sm text-indigo-600">{session.nextMeeting.topic}</p>
-          <div className="mt-2 flex space-x-2">
-            <a
-              href={session.nextMeeting.link}
-              className="text-xs bg-indigo-600 text-white px-3 py-1 rounded-md hover:bg-indigo-700 transition-colors"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Join Meeting
-            </a>
-            <button className="text-xs bg-white text-indigo-600 border border-indigo-600 px-3 py-1 rounded-md hover:bg-indigo-50 transition-colors">
-              Reschedule
-            </button>
+      {/* Contact Dialog */}
+      {showContactDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">
+                  Contact {isAlumniView ? session.studentName : session.mentorName}
+                </h3>
+                <p className="text-sm text-gray-500">
+                  Send a message to discuss your mentorship
+                </p>
+              </div>
+              <button
+                onClick={() => setShowContactDialog(false)}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div className="mb-4">
+              <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+                Your Message
+              </label>
+              <textarea
+                id="message"
+                rows={4}
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                placeholder="Type your message here..."
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+              />
+            </div>
+
+            <div className="flex justify-end space-x-3">
+              <button
+                onClick={() => setShowContactDialog(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleSendMessage}
+                disabled={!message.trim()}
+                className={`px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                  message.trim()
+                    ? 'bg-indigo-600 hover:bg-indigo-700'
+                    : 'bg-indigo-400 cursor-not-allowed'
+                }`}
+              >
+                Send Message
+              </button>
+            </div>
           </div>
         </div>
       )}
 
-      <h4 className="text-sm font-medium text-gray-700 mb-1">Goals</h4>
-      <ul className="mb-4 text-sm text-gray-600 space-y-1">
-        {session.goals.map((goal, index) => (
-          <li key={index} className="flex items-start">
-            <span className="inline-block w-4 h-4 mr-2 mt-0.5">
-              <svg className="text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
-              </svg>
-            </span>
-            {goal}
-          </li>
-        ))}
-      </ul>
+      {/* Success Dialog */}
+      {showSuccessDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Message Sent Successfully!</h3>
+                <p className="text-sm text-gray-500">
+                  Your message has been sent to {isAlumniView ? session.studentName : session.mentorName}
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-green-50 p-4 rounded-md mb-4">
+              <h4 className="text-sm font-medium text-green-800 mb-2">What happens next?</h4>
+              <ul className="text-sm text-green-700 space-y-2">
+                <li className="flex items-start">
+                  <span className="inline-block w-4 h-4 mr-2 mt-0.5">
+                    <svg className="text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </span>
+                  The recipient will be notified of your message
+                </li>
+                <li className="flex items-start">
+                  <span className="inline-block w-4 h-4 mr-2 mt-0.5">
+                    <svg className="text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </span>
+                  You can continue your conversation in the messages section
+                </li>
+                <li className="flex items-start">
+                  <span className="inline-block w-4 h-4 mr-2 mt-0.5">
+                    <svg className="text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </span>
+                  You'll be notified when they respond
+                </li>
+              </ul>
+            </div>
 
-      <div className="mb-4">
-        <div className="flex justify-between text-sm text-gray-600 mb-1">
-          <span>Progress</span>
-          <span>{session.progress}%</span>
-        </div>
-        <div className="w-full bg-gray-200 rounded-full h-2">
-          <div className="bg-indigo-600 h-2 rounded-full" style={{ width: `${session.progress}%` }}></div>
-        </div>
-      </div>
-
-      <div className="flex space-x-2">
-        <button className="flex-1 px-3 py-2 bg-indigo-600 text-white text-sm rounded-md hover:bg-indigo-700 transition-colors">
-          {isAlumniView ? 'Send Message' : 'Contact Mentor'}
-        </button>
-        {session.status === 'pending' && isAlumniView && (
-          <div className="flex space-x-2">
-            <button className="px-3 py-2 bg-green-600 text-white text-sm rounded-md hover:bg-green-700 transition-colors">
-              Accept
-            </button>
-            <button className="px-3 py-2 bg-red-600 text-white text-sm rounded-md hover:bg-red-700 transition-colors">
-              Decline
-            </button>
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowSuccessDialog(false)}
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              >
+                Got it
+              </button>
+            </div>
           </div>
-        )}
-        {session.status === 'active' && (
-          <button className="px-3 py-2 bg-gray-200 text-gray-700 text-sm rounded-md hover:bg-gray-300 transition-colors">
-            View Details
-          </button>
-        )}
-      </div>
-    </div>
+        </div>
+      )}
+
+      {/* Reschedule Dialog */}
+      {showRescheduleDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center justify-between mb-4">
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Reschedule Meeting</h3>
+                <p className="text-sm text-gray-500">
+                  Select a new date and time for your meeting
+                </p>
+              </div>
+              <button
+                onClick={() => setShowRescheduleDialog(false)}
+                className="text-gray-400 hover:text-gray-500"
+              >
+                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+              </button>
+            </div>
+
+            <div className="space-y-4">
+              <div>
+                <label htmlFor="newDate" className="block text-sm font-medium text-gray-700 mb-1">
+                  New Date
+                </label>
+                <input
+                  type="date"
+                  id="newDate"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  value={newDate}
+                  onChange={(e) => setNewDate(e.target.value)}
+                  min={new Date().toISOString().split('T')[0]}
+                />
+              </div>
+
+              <div>
+                <label htmlFor="newTime" className="block text-sm font-medium text-gray-700 mb-1">
+                  New Time
+                </label>
+                <input
+                  type="time"
+                  id="newTime"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                  value={newTime}
+                  onChange={(e) => setNewTime(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="flex justify-end space-x-3 mt-6">
+              <button
+                onClick={() => setShowRescheduleDialog(false)}
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleReschedule}
+                disabled={!newDate || !newTime}
+                className={`px-4 py-2 text-sm font-medium text-white rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 ${
+                  newDate && newTime
+                    ? 'bg-indigo-600 hover:bg-indigo-700'
+                    : 'bg-indigo-400 cursor-not-allowed'
+                }`}
+              >
+                Confirm Reschedule
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reschedule Success Dialog */}
+      {showRescheduleSuccessDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-green-100 flex items-center justify-center mr-4">
+                <svg className="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Meeting Rescheduled Successfully!</h3>
+                <p className="text-sm text-gray-500">
+                  Your meeting has been rescheduled to {new Date(new Date(newDate + 'T' + newTime)).toLocaleString()}
+                </p>
+              </div>
+            </div>
+            
+            <div className="bg-green-50 p-4 rounded-md mb-4">
+              <h4 className="text-sm font-medium text-green-800 mb-2">What happens next?</h4>
+              <ul className="text-sm text-green-700 space-y-2">
+                <li className="flex items-start">
+                  <span className="inline-block w-4 h-4 mr-2 mt-0.5">
+                    <svg className="text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </span>
+                  The other participant will be notified of the new meeting time
+                </li>
+                <li className="flex items-start">
+                  <span className="inline-block w-4 h-4 mr-2 mt-0.5">
+                    <svg className="text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </span>
+                  A new meeting link will be generated
+                </li>
+                <li className="flex items-start">
+                  <span className="inline-block w-4 h-4 mr-2 mt-0.5">
+                    <svg className="text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </span>
+                  You'll receive a confirmation email with the updated details
+                </li>
+              </ul>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowRescheduleSuccessDialog(false)}
+                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 
@@ -638,72 +924,139 @@ const MentorshipSessionCard: React.FC<{
  * Mentor Card Component
  */
 const MentorCard: React.FC<{ mentor: Mentor }> = ({ mentor }) => {
+  const [showDialog, setShowDialog] = useState(false);
+
+  const handleRequestMentorship = () => {
+    setShowDialog(true);
+  };
+
   return (
-    <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-      <div className="flex items-center mb-4">
-        <div className="w-16 h-16 rounded-full bg-gray-300 mr-4"></div>
-        <div>
-          <h3 className="text-lg font-semibold text-gray-900">{mentor.name}</h3>
-          <p className="text-sm text-gray-600">{mentor.title} at {mentor.company}</p>
-          <div className="flex items-center text-sm mt-1">
-            <span className="flex items-center text-yellow-500 mr-1">
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
-              </svg>
-              {mentor.rating}
-            </span>
-            <span className="text-gray-500">•</span>
-            <span className="text-gray-500 ml-1">{mentor.yearsOfExperience} years experience</span>
+    <>
+      <div className="bg-white p-4 rounded-lg shadow-md hover:shadow-lg transition-shadow">
+        <div className="flex items-center mb-4">
+          <div className="w-16 h-16 rounded-full bg-gray-300 mr-4"></div>
+          <div>
+            <h3 className="text-lg font-semibold text-gray-900">{mentor.name}</h3>
+            <p className="text-sm text-gray-600">{mentor.title} at {mentor.company}</p>
+            <div className="flex items-center text-sm mt-1">
+              <span className="flex items-center text-yellow-500 mr-1">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"></path>
+                </svg>
+                {mentor.rating}
+              </span>
+              <span className="text-gray-500">•</span>
+              <span className="text-gray-500 ml-1">{mentor.yearsOfExperience} years experience</span>
+            </div>
           </div>
         </div>
-      </div>
-      
-      <div className="mb-3">
-        <p className="text-sm text-gray-600 line-clamp-2">
-          {mentor.bio}
-        </p>
-      </div>
-      
-      <div className="mb-3">
-        <h4 className="text-xs font-medium text-gray-500 mb-1">Expertise</h4>
-        <div className="flex flex-wrap gap-1">
-          {mentor.expertise.map((item, index) => (
-            <span key={index} className="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
-              {item}
-            </span>
-          ))}
+        
+        <div className="mb-3">
+          <p className="text-sm text-gray-600 line-clamp-2">
+            {mentor.bio}
+          </p>
         </div>
-      </div>
-      
-      <div className="mb-4">
-        <h4 className="text-xs font-medium text-gray-500 mb-1">Skills</h4>
-        <div className="flex flex-wrap gap-1">
-          {mentor.skills.map((skill, index) => (
-            <span key={index} className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">
-              {skill}
-            </span>
-          ))}
+        
+        <div className="mb-3">
+          <h4 className="text-xs font-medium text-gray-500 mb-1">Expertise</h4>
+          <div className="flex flex-wrap gap-1">
+            {mentor.expertise.map((item, index) => (
+              <span key={index} className="text-xs bg-indigo-100 text-indigo-800 px-2 py-1 rounded">
+                {item}
+              </span>
+            ))}
+          </div>
         </div>
+        
+        <div className="mb-4">
+          <h4 className="text-xs font-medium text-gray-500 mb-1">Skills</h4>
+          <div className="flex flex-wrap gap-1">
+            {mentor.skills.map((skill, index) => (
+              <span key={index} className="text-xs bg-gray-100 text-gray-800 px-2 py-1 rounded">
+                {skill}
+              </span>
+            ))}
+          </div>
+        </div>
+        
+        <div className="flex items-center justify-between mb-4">
+          <span className="text-xs text-gray-500">
+            <span className="font-medium">Available:</span> {mentor.availability}
+          </span>
+          <span className={`inline-block w-3 h-3 rounded-full ${mentor.isAvailable ? 'bg-green-500' : 'bg-red-500'}`}></span>
+        </div>
+        
+        <button 
+          className={`w-full py-2 rounded-md text-sm font-medium ${
+            mentor.isAvailable 
+              ? 'bg-indigo-600 text-white hover:bg-indigo-700' 
+              : 'bg-gray-200 text-gray-500 cursor-not-allowed'
+          } transition-colors`}
+          disabled={!mentor.isAvailable}
+          onClick={handleRequestMentorship}
+        >
+          {mentor.isAvailable ? 'Request Mentorship' : 'Currently Unavailable'}
+        </button>
       </div>
-      
-      <div className="flex items-center justify-between mb-4">
-        <span className="text-xs text-gray-500">
-          <span className="font-medium">Available:</span> {mentor.availability}
-        </span>
-        <span className={`inline-block w-3 h-3 rounded-full ${mentor.isAvailable ? 'bg-green-500' : 'bg-red-500'}`}></span>
-      </div>
-      
-      <button 
-        className={`w-full py-2 rounded-md text-sm font-medium ${
-          mentor.isAvailable 
-            ? 'bg-indigo-600 text-white hover:bg-indigo-700' 
-            : 'bg-gray-200 text-gray-500 cursor-not-allowed'
-        } transition-colors`}
-        disabled={!mentor.isAvailable}
-      >
-        {mentor.isAvailable ? 'Request Mentorship' : 'Currently Unavailable'}
-      </button>
-    </div>
+
+      {/* Request Mentorship Dialog */}
+      {showDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4">
+            <div className="flex items-center mb-4">
+              <div className="w-12 h-12 rounded-full bg-indigo-100 flex items-center justify-center mr-4">
+                <svg className="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+              </div>
+              <div>
+                <h3 className="text-lg font-semibold text-gray-900">Request Sent Successfully!</h3>
+                <p className="text-sm text-gray-500">Your mentorship request has been sent to {mentor.name}</p>
+              </div>
+            </div>
+            
+            <div className="bg-indigo-50 p-4 rounded-md mb-4">
+              <h4 className="text-sm font-medium text-indigo-800 mb-2">What happens next?</h4>
+              <ul className="text-sm text-indigo-700 space-y-2">
+                <li className="flex items-start">
+                  <span className="inline-block w-4 h-4 mr-2 mt-0.5">
+                    <svg className="text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </span>
+                  Mentor will review your request
+                </li>
+                <li className="flex items-start">
+                  <span className="inline-block w-4 h-4 mr-2 mt-0.5">
+                    <svg className="text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </span>
+                  You'll receive a notification when they respond
+                </li>
+                <li className="flex items-start">
+                  <span className="inline-block w-4 h-4 mr-2 mt-0.5">
+                    <svg className="text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </span>
+                  Once accepted, you can start your mentorship journey
+                </li>
+              </ul>
+            </div>
+
+            <div className="flex justify-end">
+              <button
+                onClick={() => setShowDialog(false)}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+              >
+                Got it
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 };
 

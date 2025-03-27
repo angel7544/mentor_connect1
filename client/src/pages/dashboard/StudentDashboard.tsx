@@ -302,20 +302,8 @@ const StudentDashboard: React.FC = () => {
   }, []);
 
   const handleRequestMentorship = async (mentorId: string) => {
-    try {
-      await axios.post('/api/mentorship/request', { 
-        mentorId,
-        message: 'I would like to request your mentorship to help guide me in my career journey.'
-      });
-      
-      // Show success message or update UI
-      alert('Mentorship request sent successfully!');
-      
-    } catch (err) {
-      console.error('Error sending mentorship request:', err);
-      // Show error message
-      alert('Failed to send mentorship request. Please try again.');
-    }
+    // Redirect to mentorship page
+    window.location.href = '/mentorship';
   };
 
   if (loading) {
@@ -449,7 +437,7 @@ const StudentDashboard: React.FC = () => {
                         onClick={() => handleRequestMentorship(mentor.user._id)}
                         className="flex-1 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700 text-sm"
                       >
-                        Request Mentorship
+                        Connect
                       </button>
                     </div>
                   </div>
