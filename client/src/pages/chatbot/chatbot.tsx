@@ -3,6 +3,9 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 const OLLAMA_API_BASE_URL = 'http://localhost:11434/api';
 
+// Add a proxy URL for development
+const PROXY_URL = 'http://localhost:3000/api/proxy'; // This will be our proxy endpoint
+
 interface ChatMessage {
   type: 'user' | 'bot';
   content: string;
@@ -82,61 +85,97 @@ const Chatbot: React.FC = () => {
       timestamp: new Date()
     };
     
-    // Add user message to chat history immediately
     setChatHistory(prev => [...prev, userMessage]);
     setLoading(true);
     setMessage('');
     setTypingIndicator(true);
 
     try {
-      // Mock response for demo
-      setTimeout(() => {
-        const responses = [
-          "That's a great question! Based on my analysis, I recommend focusing on developing your skills in data structures and algorithms, which are fundamental to technical interviews.",
-          "I understand your concern. For career progression in software development, it's important to balance technical depth with breadth of knowledge. Consider specializing in one area while maintaining awareness of related technologies.",
-          "When preparing for technical interviews, practice solving problems aloud and explaining your thought process. This demonstrates not just what you know, but how you approach problems.",
-          "For effective studying, I recommend the Pomodoro Technique - 25 minutes of focused work followed by a 5-minute break. This helps maintain concentration while preventing burnout."
-        ];
+      // First try direct connection
+      try {
+        const res = await fetch(`${OLLAMA_API_BASE_URL}/generate`, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ 
+            model: 'llama3.2',
+            prompt: message,
+            stream: false 
+          }),
+        });
+        
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
+        
+        const data = await res.json();
+        console.log('Direct API Response:', data);
+        
+        if (!data.response) {
+          throw new Error('No response from model');
+        }
         
         const botMessage: ChatMessage = {
           type: 'bot',
-          content: responses[Math.floor(Math.random() * responses.length)],
+          content: formatBotResponse(data.response) || 'No response',
           timestamp: new Date(),
           category: selectedCategory || undefined
         };
         
         setChatHistory(prev => [...prev, botMessage]);
-        setLoading(false);
-        setTypingIndicator(false);
-      }, 1500);
-      
-      // Commented out actual API call for demo
-      /*
-      const res = await fetch(`${OLLAMA_API_BASE_URL}/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ model: 'llama3.2', prompt: message, stream: false }),
-      });
-      const data = await res.json();
-      
-      const botMessage: ChatMessage = {
-        type: 'bot',
-        content: formatBotResponse(data.response) || 'No response',
-        timestamp: new Date(),
-        category: selectedCategory || undefined
-      };
-      
-      setChatHistory(prev => [...prev, botMessage]);
-      setLoading(false);
-      setTypingIndicator(false);
-      */
+      } catch (directError) {
+        console.log('Direct connection failed, trying proxy:', directError);
+        
+        // If direct connection fails, try through proxy
+        const proxyRes = await fetch(PROXY_URL, {
+          method: 'POST',
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({ 
+            url: `${OLLAMA_API_BASE_URL}/generate`,
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+              model: 'llama3.2',
+              prompt: message,
+              stream: false 
+            })
+          }),
+        });
+        
+        if (!proxyRes.ok) {
+          throw new Error(`Proxy error! status: ${proxyRes.status}`);
+        }
+        
+        const proxyData = await proxyRes.json();
+        console.log('Proxy API Response:', proxyData);
+        
+        if (!proxyData.response) {
+          throw new Error('No response from model through proxy');
+        }
+        
+        const botMessage: ChatMessage = {
+          type: 'bot',
+          content: formatBotResponse(proxyData.response) || 'No response',
+          timestamp: new Date(),
+          category: selectedCategory || undefined
+        };
+        
+        setChatHistory(prev => [...prev, botMessage]);
+      }
     } catch (error) {
+      console.error('Error generating response:', error);
       const errorMessage: ChatMessage = {
         type: 'bot',
-        content: 'Error connecting to Ollama API',
+        content: `I apologize, but I encountered an error: ${error instanceof Error ? error.message : 'Unknown error'}. Please try again.`,
         timestamp: new Date()
       };
       setChatHistory(prev => [...prev, errorMessage]);
+    } finally {
       setLoading(false);
       setTypingIndicator(false);
     }
