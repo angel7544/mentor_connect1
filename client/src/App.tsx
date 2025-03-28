@@ -22,6 +22,7 @@ import NotFoundPage from './pages/NotFoundPage';
 import Chatbot from './pages/chatbot/chatbot';
 import ContactUs from './pages/ContactUs/ContactUs';
 import ContactPublic from './pages/ContactPublic';
+import ProgressPage from './pages/progress/ProgressPage';
 
 // import google tags manager 
 import useGTM from './hooks/useGTM';
@@ -79,6 +80,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <MentorshipPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/progress" 
+            element={
+              <ProtectedRoute>
+                <ProgressPage />
               </ProtectedRoute>
             } 
           />
