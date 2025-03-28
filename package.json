@@ -15,8 +15,11 @@
     "start": "concurrently \"cd client && npm run start\" \"cd server && npm run dev\""
   },
   "dependencies": {
+    "@react-pdf/renderer": "^4.3.0",
     "concurrently": "^9.1.2",
     "helmet": "^8.0.0",
+    "html2canvas": "^1.4.1",
+    "jspdf": "^3.0.1",
     "lucide-react": "^0.483.0",
     "mongodb": "^6.14.2",
     "nodemailer": "^6.10.0",
