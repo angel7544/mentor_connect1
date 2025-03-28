@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { 
   HomeIcon, 
@@ -26,6 +26,8 @@ import {
   ChartBarIcon
 } from '@heroicons/react/24/outline';
 import useAuthStore from '../../store/authStore';
+import useNotificationStore from '../../store/notificationStore';
+import NotificationBell from '../notification/NotificationBell';
 
 const MainLayout: React.FC = () => {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -33,13 +35,27 @@ const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const { user } = useAuthStore(state => ({ user: state.user }));
   const { isAuthenticated, logout } = useAuthStore();
+  
+  // Get notifications from the store
+  const { 
+    notifications, 
+    fetchNotifications, 
+    markAsRead 
+  } = useNotificationStore();
+  
+  // Fetch notifications on component mount
+  useEffect(() => {
+    if (isAuthenticated) {
+      fetchNotifications();
+    }
+  }, [isAuthenticated, fetchNotifications]);
 
   const navigation = [
     ...(isAuthenticated ? [] : [{ name: 'Home', href: '/', icon: HomeIcon }]), // Include Home only if not authenticated
     { name: 'Dashboard', href: '/dashboard', icon: SparklesIcon, protected: true },
 
    
-    { name: 'Notificaiton', href: '/notification', icon: UserIcon, protected: true },
+    { name: 'Notification', href: '/notification', icon: BellIcon, protected: true },
     { name: 'Progress', href: '/progress', icon: ChartBarIcon, protected: true },
     { name: 'Profile', href: '/profile', icon: UserIcon, protected: true },
     { name: 'Mentorship', href: '/mentorship', icon: AcademicCapIcon, protected: true },
@@ -186,6 +202,24 @@ const MainLayout: React.FC = () => {
             <span className="sr-only">Open sidebar</span>
             <Bars3Icon className="h-6 w-6" aria-hidden="true" />
           </button>
+        </div>
+        
+        {/* Header with notification bell */}
+        <div className="sticky top-0 z-10 bg-white border-b border-gray-200 px-4 py-2 sm:px-6 md:px-8 flex justify-between items-center">
+          <h1 className="text-lg font-medium text-gray-900">
+            {navigation.find(item => item.href === location.pathname)?.name || 'Dashboard'}
+          </h1>
+          
+          {isAuthenticated && (
+            <div className="flex items-center space-x-4">
+              <NotificationBell 
+                notifications={notifications} 
+                onMarkAsRead={markAsRead} 
+              />
+              
+              {/* User profile dropdown would go here */}
+            </div>
+          )}
         </div>
         
         <main className="flex-1">
