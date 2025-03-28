@@ -37,6 +37,9 @@ const MainLayout: React.FC = () => {
   const navigation = [
     ...(isAuthenticated ? [] : [{ name: 'Home', href: '/', icon: HomeIcon }]), // Include Home only if not authenticated
     { name: 'Dashboard', href: '/dashboard', icon: SparklesIcon, protected: true },
+
+   
+    { name: 'Notificaiton', href: '/notification', icon: UserIcon, protected: true },
     { name: 'Progress', href: '/progress', icon: ChartBarIcon, protected: true },
     { name: 'Profile', href: '/profile', icon: UserIcon, protected: true },
     { name: 'Mentorship', href: '/mentorship', icon: AcademicCapIcon, protected: true },

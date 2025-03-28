@@ -23,7 +23,7 @@ import Chatbot from './pages/chatbot/chatbot';
 import ContactUs from './pages/ContactUs/ContactUs';
 import ContactPublic from './pages/ContactPublic';
 import ProgressPage from './pages/progress/ProgressPage';
-
+import NotificationPage from './pages/notifcation/NotificationPage';
 // import google tags manager 
 import useGTM from './hooks/useGTM';
 // Protected route component
@@ -72,6 +72,14 @@ function App() {
             element={
               <ProtectedRoute>
                 <ProfilePage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path="/notification" 
+            element={
+              <ProtectedRoute>
+                <NotificationPage />
               </ProtectedRoute>
             } 
           />
