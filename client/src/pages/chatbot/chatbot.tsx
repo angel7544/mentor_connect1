@@ -369,13 +369,13 @@ const Chatbot: React.FC = () => {
                 initial={{ opacity: 0, x: chat.type === 'user' ? 20 : -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.3 }}
-                className={`flex ${chat.type === 'user' ? 'justify-end' : 'justify-start'}`}
+                className={`flex ${chat.type === 'user' ? 'justify-end' : 'justify-start'} mb-4`}
               >
                 <motion.div
                   whileHover={{ scale: 1.01 }}
                   className={`max-w-[80%] rounded-2xl p-4 ${
                     chat.type === 'user'
-                      ? 'bg-blue-600 text-white'
+                      ? 'bg-blue-600 text-white shadow-lg'
                       : 'bg-white shadow-md'
                   }`}
                 >
@@ -395,7 +395,7 @@ const Chatbot: React.FC = () => {
                     </div>
                   )}
                   <div className="flex justify-between items-start gap-2">
-                    <p className={`text-sm whitespace-pre-wrap ${chat.type === 'user' ? 'text-white' : 'text-gray-800'}`}>
+                    <p className={`text-sm whitespace-pre-wrap break-words ${chat.type === 'user' ? 'text-white' : 'text-gray-800'}`}>
                       {chat.content}
                     </p>
                     {chat.type === 'bot' && (
