@@ -13,7 +13,9 @@ interface RegisterFormData {
   password: string;
   confirmPassword: string;
   role: 'STUDENT' | 'ALUMNI';
-  graduationYear?: string; // Optional in form data, becomes required for alumni
+  graduationYear?: string; // Required for alumni
+  company?: string; // Required for alumni
+  jobTitle?: string; // Required for alumni
 }
 
 const RegisterPage: React.FC = () => {
@@ -46,10 +48,20 @@ const RegisterPage: React.FC = () => {
       return;
     }
 
-    // Check if graduation year is provided for alumni
-    if (data.role === 'ALUMNI' && !data.graduationYear) {
-      toast.error('Graduation year is required for alumni');
-      return;
+    // Validate alumni-specific fields
+    if (data.role === 'ALUMNI') {
+      if (!data.graduationYear) {
+        toast.error('Graduation year is required for alumni');
+        return;
+      }
+      if (!data.company) {
+        toast.error('Company is required for alumni');
+        return;
+      }
+      if (!data.jobTitle) {
+        toast.error('Job title is required for alumni');
+        return;
+      }
     }
 
     try {
@@ -129,28 +141,85 @@ const RegisterPage: React.FC = () => {
   
   // Show different fields based on selected role
   const renderRoleSpecificFields = () => {
-    
     if (selectedRole === 'ALUMNI') {
       return (
-        <div data-aos="fade-zoom-in">
-          <label htmlFor="graduationYear" className="block text-sm font-medium text-gray-700">
-            Graduation Year
-          </label>
-          <div className="mt-1">
-            <input
-              id="graduationYear"
-              type="number"
-              min="1950"
-              max={new Date().getFullYear()}
-              className="input"
-              placeholder="e.g. 2020"
-              {...register('graduationYear', { 
-                required: 'Graduation year is required for alumni'
-              })}
-            />
-            {errors.graduationYear && (
-              <p className="mt-1 text-sm text-red-600">{errors.graduationYear.message}</p>
-            )}
+        <div data-aos="fade-zoom-in" className="space-y-4">
+          <div>
+            <label htmlFor="graduationYear" className="block text-sm font-medium text-gray-700">
+              Graduation Year
+            </label>
+            <div className="mt-1">
+              <input
+                id="graduationYear"
+                type="number"
+                min="1950"
+                max={new Date().getFullYear()}
+                className="input"
+                placeholder="e.g. 2020"
+                {...register('graduationYear', { 
+                  required: 'Graduation year is required for alumni',
+                  min: {
+                    value: 1950,
+                    message: 'Graduation year must be after 1950'
+                  },
+                  max: {
+                    value: new Date().getFullYear(),
+                    message: 'Graduation year cannot be in the future'
+                  }
+                })}
+              />
+              {errors.graduationYear && (
+                <p className="mt-1 text-sm text-red-600">{errors.graduationYear.message}</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="company" className="block text-sm font-medium text-gray-700">
+              Current Company
+            </label>
+            <div className="mt-1">
+              <input
+                id="company"
+                type="text"
+                className="input"
+                placeholder="e.g. Google"
+                {...register('company', { 
+                  required: 'Company is required for alumni',
+                  minLength: {
+                    value: 2,
+                    message: 'Company name must be at least 2 characters'
+                  }
+                })}
+              />
+              {errors.company && (
+                <p className="mt-1 text-sm text-red-600">{errors.company.message}</p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label htmlFor="jobTitle" className="block text-sm font-medium text-gray-700">
+              Job Title
+            </label>
+            <div className="mt-1">
+              <input
+                id="jobTitle"
+                type="text"
+                className="input"
+                placeholder="e.g. Software Engineer"
+                {...register('jobTitle', { 
+                  required: 'Job title is required for alumni',
+                  minLength: {
+                    value: 2,
+                    message: 'Job title must be at least 2 characters'
+                  }
+                })}
+              />
+              {errors.jobTitle && (
+                <p className="mt-1 text-sm text-red-600">{errors.jobTitle.message}</p>
+              )}
+            </div>
           </div>
         </div>
       );
@@ -332,7 +401,7 @@ const RegisterPage: React.FC = () => {
         </div>
       </form>
       
-      <div className="mt-6 text-center">
+      <div className="mt-6 texst-center">
         <p className="text-sm text-gray-600">
           Already have an account?{' '}
           <Link to="/login" className="font-medium text-primary-600 hover:text-primary-500">
