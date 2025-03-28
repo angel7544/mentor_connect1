@@ -197,10 +197,10 @@ const AlumniMentorshipView: React.FC<MentorshipViewProps> = ({ activeTab, search
     {
       id: '1',
       mentorId: '1', // current user
-      mentorName: 'Michael Chen',
+      mentorName: 'Parassana kumar',
       mentorAvatar: '',
       studentId: '2',
-      studentName: 'Jordan Lee',
+      studentName: 'Ashutosh kumar',
       studentAvatar: '',
       status: 'active',
       startDate: new Date(2024, 1, 15),
@@ -219,7 +219,7 @@ const AlumniMentorshipView: React.FC<MentorshipViewProps> = ({ activeTab, search
     {
       id: '2',
       mentorId: '1', // current user
-      mentorName: 'Michael Chen',
+      mentorName: "Rashmi ma'am",
       mentorAvatar: '',
       studentId: '3',
       studentName: 'Taylor Wilson',
